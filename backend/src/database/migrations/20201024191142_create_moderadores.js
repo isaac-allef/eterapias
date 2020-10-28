@@ -1,10 +1,16 @@
 
 exports.up = function(knex) {
   return knex.schema.createTable('moderadores', function(table) {
-      table.string('id').primary();
-      table.string('name').notNullable();
+      // user datas
+      table.increments('id');
+      table.text('userName').unique().notNullable();
+      table.timestamp('created_at').defaultTo(knex.fn.now());
+      table.timestamp('updated_at').defaultTo(knex.fn.now());
+
+      // moderadores data
+      table.string('fullName').notNullable();
       table.string('email').notNullable();
-      table.string('whatsapp');
+      table.string('whatsapp_tel');
       table.string('city').notNullable();
       table.string('uf', 2).notNullable();
       table.string('college');
