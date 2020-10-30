@@ -7,6 +7,7 @@ exports.seed = function(knex) {
       return knex('moderadores').insert([
         {
           userName: 'isaac_allef', 
+          password: '123',
           fullName: 'Isaac Allef Santos Cruz', 
           email: 'isaac_allef@hotmail.com', 
           whatsapp_tel: '73988696833', 
@@ -16,6 +17,7 @@ exports.seed = function(knex) {
         },
         {
           userName: 'curinga_hahaha', 
+          password: '321',
           fullName: 'Curinga Santos da Silva', 
           email: 'hahaha@hahaha.com', 
           whatsapp_tel: '73988999999', 

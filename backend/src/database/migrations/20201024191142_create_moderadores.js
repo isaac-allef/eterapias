@@ -4,6 +4,7 @@ exports.up = function(knex) {
       // user datas
       table.increments('id');
       table.text('userName').unique().notNullable();
+      table.text('password').notNullable();
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
 

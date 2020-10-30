@@ -4,6 +4,7 @@ module.exports = {
     async loadDataSheet (request, response) {
         const { link_id } = request.body;
         const data = await sheet.loadDatas(link_id)
+        console.log(request.userId)
         return response.json( data );
         // FAZER MAIS PARA FRENTE:
         // aqui ao invés de devolver todos os dados,
