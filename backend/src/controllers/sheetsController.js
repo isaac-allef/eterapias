@@ -8,7 +8,7 @@ module.exports = {
             const data = await sheet.loadDatas(link_id)
             return response.json( data );
         }catch(err) {
-            return response.status(400).send({ error: err.message});
+            return response.status(500).send({ error: err.message});
         }
         // FAZER MAIS PARA FRENTE:
         // aqui ao invés de devolver todos os dados,
