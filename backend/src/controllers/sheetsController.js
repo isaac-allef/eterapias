@@ -3,9 +3,13 @@ const sheet = require('../apiGoogleSheets/connection');
 module.exports = {
     async loadDataSheet (request, response) {
         const { link_id } = request.body;
-        const data = await sheet.loadDatas(link_id)
         console.log(request.userId)
-        return response.json( data );
+        try {
+            const data = await sheet.loadDatas(link_id)
+            return response.json( data );
+        }catch(err) {
+            return response.status(400).send({ error: err.message});
+        }
         // FAZER MAIS PARA FRENTE:
         // aqui ao invés de devolver todos os dados,
         // deve guardar os dados em um banco de dados

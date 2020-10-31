@@ -1,13 +1,15 @@
+const bcrypt = require('bcrypt');
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
   return knex('moderadores').del()
-    .then(function () {
+    .then(async function () {
       // Inserts seed entries
+      // const password = await bcrypt.hash('123', 10);
       return knex('moderadores').insert([
         {
           userName: 'isaac_allef', 
-          password: '123',
+          password: await bcrypt.hash('123', 10),
           fullName: 'Isaac Allef Santos Cruz', 
           email: 'isaac_allef@hotmail.com', 
           whatsapp_tel: '73988696833', 
@@ -17,7 +19,7 @@ exports.seed = function(knex) {
         },
         {
           userName: 'curinga_hahaha', 
-          password: '321',
+          password: await bcrypt.hash('321', 10),
           fullName: 'Curinga Santos da Silva', 
           email: 'hahaha@hahaha.com', 
           whatsapp_tel: '73988999999', 

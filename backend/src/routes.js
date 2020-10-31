@@ -4,6 +4,7 @@ const express = require('express');
 const sheet = require('./controllers/sheetsController');
 const authMiddleware = require('./middlewares/auth');
 const authenticationController = require('./controllers/authenticationController');
+const moderadorController = require('./controllers/moderadorController');
 
 const routes = express.Router();
 
@@ -14,6 +15,11 @@ routes.use(authMiddleware)
 //      precisará ter um token de acesso
 //      dada pela rota authorization
 //      tem acesso ao id do usuário através do request.userId
+
 routes.post('/loadDataSheet', sheet.loadDataSheet);
+
+routes.get('/moderadores', moderadorController.list);
+routes.post('/moderador', moderadorController.create);
+routes.delete('/moderador/:id', moderadorController.delete);
 
 module.exports = routes;

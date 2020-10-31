@@ -11,13 +11,15 @@ module.exports = {
         const user = await connectionDB('moderadores')
             .select('*')
             .where('userName', userName)
+            .whereNot('status', 'deleted')
+            .whereNot('status', 'no active')
             .first();
     
         if(!user) {
             return response.status(400).send({ error: 'User not found' });
         }
-        const pass = await bcrypt.hash(user.password, 10)
-        if (!await bcrypt.compare(password, /*user.password*/pass)) {
+        // const pass = await bcrypt.hash(user.password, 10)
+        if (!await bcrypt.compare(password, user.password/*pass*/)) {
             return response.status(400).send({ error: 'Invalid password' });
         }
     
