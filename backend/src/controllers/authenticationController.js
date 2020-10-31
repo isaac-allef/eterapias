@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const connectionDB = require('../database/connection');
 const authConfig = require('../config/auth.json');
+const cryptHanddle = require('../crypt/cryptHanddle');
 
 module.exports = {
     async authenticationModeradores (request, response) {
@@ -19,7 +19,7 @@ module.exports = {
             return response.status(400).send({ error: 'User not found' });
         }
         // const pass = await bcrypt.hash(user.password, 10)
-        if (!await bcrypt.compare(password, user.password/*pass*/)) {
+        if (!await cryptHanddle.compareUncryptCrypt(password, user.password)) {
             return response.status(400).send({ error: 'Invalid password' });
         }
     

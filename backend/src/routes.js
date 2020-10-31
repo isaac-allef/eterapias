@@ -16,10 +16,26 @@ routes.use(authMiddleware)
 //      dada pela rota authorization
 //      tem acesso ao id do usuário através do request.userId
 
+// google api
 routes.post('/loadDataSheet', sheet.loadDataSheet);
 
+// administrador
 routes.get('/moderadores', moderadorController.list);
 routes.post('/moderador', moderadorController.create);
+routes.put('/moderador/:id', moderadorController.update);
 routes.delete('/moderador/:id', moderadorController.delete);
+// routes.get('/eterapia', eterapiaController.list);
+// routes.post('/eterapia', eterapiaController.create);
+// routes.put('/eterapia/:id', eterapiaController.update);
+// routes.delete('/eterapia/:id', eterapiaController.delete);
+
+// moderadores
+routes.put('/moderadorLoginPass/:id', moderadorController.updateLoginPass);
+
+//eterapias
+
+
+//participantes
+
 
 module.exports = routes;
