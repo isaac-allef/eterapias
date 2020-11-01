@@ -4,13 +4,31 @@ const cryptHanddle = require('../crypt/cryptHanddle');
 module.exports = {
     async list(request, response, next) {
         try {
-            const moderadores = await connectionDB('moderadores').select('*').whereNot('status', 'deleted');
+            const { page=1 } = request.query;
+            const moderadores = await connectionDB('moderadores')
+            .select('*')
+            .whereNot('status', 'deleted')
+            .limit(5)
+            .offset((page - 1) * 5);
             
             moderadores.forEach( (moderador) => {
                 moderador.password = undefined;
             });
             
             return response.json(moderadores);
+        }catch(err) {
+            next(err)
+        }
+    },
+
+    async listMyEterapias(request, response, next) {
+        try {
+            const { myId } = request.body;
+            const result = await connectionDB('eterapias')
+                .select('*')
+                .join('eterapias_moderadores', 'eterapias.id', '=', 'eterapias_moderadores.id_eterapia_fk')
+                .where('eterapias_moderadores.id_moderador_fk', '=', myId)
+            return response.status(200).send(result)
         }catch(err) {
             next(err)
         }
