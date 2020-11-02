@@ -28,13 +28,15 @@ routes.delete('/moderador/:id', moderadorController.delete);
 routes.get('/eterapias', eterapiaController.list);
 routes.post('/eterapia', eterapiaController.create);
 routes.put('/eterapia/:id', eterapiaController.update);
-routes.put('/eterapia/:id_eterapia/:id_moderador', eterapiaController.linkModerador);
 routes.delete('/eterapia/:id', eterapiaController.delete);
-routes.delete('/eterapia/:id_eterapia/:id_moderador', eterapiaController.unlinkModerador);
 // routes.get('/participante', participanteController.list);
 // routes.post('/participante', participanteController.create);
 // routes.put('/participante/:id', participanteController.update);
 // routes.delete('/participante/:id', participanteController.delete);
+routes.put('/eterapia/:id_eterapia/:id_moderador', eterapiaController.linkModerador);
+routes.delete('/eterapia/:id_eterapia/:id_moderador', eterapiaController.unlinkModerador);
+// routes.put('/eterapia/:id_eterapia/:id_participante', eterapiaController.linkParticipante);
+// routes.delete('/eterapia/:id_eterapia/:id_participante', eterapiaController.unlinkParticipante);
 
 // moderadores
 routes.put('/moderadorLoginPass/:id', moderadorController.updateLoginPass);
@@ -49,6 +51,7 @@ routes.get('/myeterapias', moderadorController.listMyEterapias);
 // routes.delete('/presenca', encontroController.delete);
 
 //eterapias
+routes.get('/mymoderadores', eterapiaController.listMyModeradores);
 // routes.get('/myparticpantes', eterapiaController.list);
 
 

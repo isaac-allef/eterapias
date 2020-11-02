@@ -16,6 +16,29 @@ module.exports = {
         }
     },
 
+    async listMyModeradores(request, response, next) {
+        try {
+            const { myId } = request.body;
+
+            const { status } = await connectionDB('eterapias')
+                .select('status')
+                .where('id', myId)
+                .first();
+            
+            if (!status || status === 'deleted')
+                return response.status(400).send({ error: "Eterapia not found"});
+            
+            const result = await connectionDB('moderadores')
+                .select('moderadores.*')
+                .join('eterapias_moderadores', 'moderadores.id', '=', 'eterapias_moderadores.id_moderador_fk')
+                .where('eterapias_moderadores.id_eterapia_fk', '=', myId)
+                .whereNot('eterapias_moderadores.status_moderador', 'deleted');
+            return response.status(200).send(result)
+        }catch(err) {
+            next(err)
+        }
+    },
+
     async create(request, response, next) {
         try {
             const {
@@ -127,7 +150,17 @@ module.exports = {
             if (!status || status === 'deleted')
                 return response.status(400).send({ error: "Not found"});
             
-            await connectionDB('eterapias').where('id', id).update({status: 'deleted'})
+            await connectionDB.transaction(async trans => {
+                try {
+                    await connectionDB('eterapias').where('id', id).update({status: 'deleted'})
+                    await connectionDB('eterapias_moderadores')
+                        .update({status_eterapia: 'deleted'})
+                        .where('id_eterapia_fk', id)
+                }catch(err) {
+                    console.log(err)
+                    next(err)
+                }
+            })
             
             return response.status(204).send();
         }catch(err) {

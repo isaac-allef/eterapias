@@ -7,6 +7,9 @@ exports.seed = function(knex) {
       return knex('eterapias').insert([
         {
           title: "Bate papo literário"
+        },
+        {
+          title: "Falar é bom"
         }
       ]);
     });

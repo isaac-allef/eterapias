@@ -8,7 +8,8 @@ exports.up = function(knex) {
         table.integer('id_moderador_fk')
             .references('moderadores.id')
             .notNullable();
-        table.text('status').defaultTo('active'); // active / no active / deleted
+        table.text('status_eterapia').defaultTo('active'); // active / no active / deleted
+        table.text('status_moderador').defaultTo('active'); // active / no active / deleted
     })
   };
   
