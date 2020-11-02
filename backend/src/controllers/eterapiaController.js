@@ -92,6 +92,43 @@ module.exports = {
         }
     },
 
+    async setStatus(request, response, next) {
+        try {
+            const { id } = request.params;
+            const { active } = request.body;
+            
+            let flag
+            if (active == false)
+                flag = 'inactive'
+            else
+                flag = 'active'
+
+            const { status } = await connectionDB('eterapias')
+                .select('status')
+                .where('id', id)
+                .first();
+            
+            if (!status || status === 'deleted')
+                return response.status(400).send({ error: "Not found"});
+            
+            await connectionDB.transaction(async trans => {
+                try {
+                    await connectionDB('eterapias').where('id', id).update({status: flag})
+                    await connectionDB('eterapias_moderadores')
+                        .update({status_moderador: flag})
+                        .where('id_eterapia_fk', id)
+                }catch(err) {
+                    next(err)
+                }
+            })
+            
+            return response.status(204).send();
+        }catch(err) {
+            // return response.status(500).send({ error: err.detail});
+            next(err)
+        }
+    },
+
     async linkModerador(request, response, next) {
         try {
             const { id_eterapia, id_moderador } = request.params;

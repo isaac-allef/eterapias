@@ -24,10 +24,12 @@ routes.post('/loadDataSheet', sheet.loadDataSheet);
 routes.get('/moderadores', moderadorController.list);
 routes.post('/moderador', moderadorController.create);
 routes.put('/moderador/:id', moderadorController.update);
+routes.put('/moderadorSetStatus/:id', moderadorController.setStatus);
 routes.delete('/moderador/:id', moderadorController.delete);
 routes.get('/eterapias', eterapiaController.list);
 routes.post('/eterapia', eterapiaController.create);
 routes.put('/eterapia/:id', eterapiaController.update);
+routes.put('/eterapiaSetStatus/:id', eterapiaController.setStatus);
 routes.delete('/eterapia/:id', eterapiaController.delete);
 // routes.get('/participante', participanteController.list);
 // routes.post('/participante', participanteController.create);
@@ -52,7 +54,7 @@ routes.get('/myeterapias', moderadorController.listMyEterapias);
 
 //eterapias
 routes.get('/mymoderadores', eterapiaController.listMyModeradores);
-// routes.get('/myparticpantes', eterapiaController.list);
+// routes.get('/myparticipantes', eterapiaController.list);
 
 
 module.exports = routes;

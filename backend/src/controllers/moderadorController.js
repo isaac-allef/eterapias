@@ -112,6 +112,43 @@ module.exports = {
         }
     },
 
+    async setStatus(request, response, next) {
+        try {
+            const { id } = request.params;
+            const { active } = request.body;
+            
+            let flag
+            if (active == false)
+                flag = 'inactive'
+            else
+                flag = 'active'
+
+            const { status } = await connectionDB('moderadores')
+                .select('status')
+                .where('id', id)
+                .first();
+            
+            if (!status || status === 'deleted')
+                return response.status(400).send({ error: "Not found"});
+            
+            await connectionDB.transaction(async trans => {
+                try {
+                    await connectionDB('moderadores').where('id', id).update({status: flag})
+                    await connectionDB('eterapias_moderadores')
+                        .update({status_moderador: flag})
+                        .where('id_moderador_fk', id)
+                }catch(err) {
+                    next(err)
+                }
+            })
+            
+            return response.status(204).send();
+        }catch(err) {
+            // return response.status(500).send({ error: err.detail});
+            next(err)
+        }
+    },
+
     async updateLoginPass(request, response, next) {
         try {
             const { id } = request.params;
@@ -162,7 +199,6 @@ module.exports = {
                         .update({status_moderador: 'deleted'})
                         .where('id_moderador_fk', id)
                 }catch(err) {
-                    console.log(err)
                     next(err)
                 }
             })
