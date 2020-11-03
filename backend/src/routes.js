@@ -24,7 +24,7 @@ routes.post('/loadDataSheet', sheet.loadDataSheet);
 routes.get('/moderadores', moderadorController.list);
 routes.post('/moderador', moderadorController.create);
 routes.put('/moderador/:id', moderadorController.update);
-routes.put('/moderadorSetStatus/:id', moderadorController.setStatus);
+routes.put('/moderadorSetStatus/:id', moderadorController.setStatusActive);
 routes.delete('/moderador/:id', moderadorController.delete);
 routes.get('/eterapias', eterapiaController.list);
 routes.post('/eterapia', eterapiaController.create);

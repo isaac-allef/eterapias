@@ -12,7 +12,7 @@ module.exports = {
             .select('*')
             .where('userName', userName)
             .whereNot('status', 'deleted')
-            .whereNot('status', 'no active')
+            .whereNot('status', 'inactive')
             .first();
     
         if(!user) {

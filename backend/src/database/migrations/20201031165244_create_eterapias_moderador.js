@@ -10,6 +10,7 @@ exports.up = function(knex) {
             .notNullable();
         table.text('status_eterapia').defaultTo('active'); // active / no active / deleted
         table.text('status_moderador').defaultTo('active'); // active / no active / deleted
+        table.unique(['id_eterapia_fk', 'id_moderador_fk'])
     })
   };
   
