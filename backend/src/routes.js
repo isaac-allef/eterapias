@@ -29,7 +29,7 @@ routes.delete('/moderador/:id', moderadorController.delete);
 routes.get('/eterapias', eterapiaController.list);
 routes.post('/eterapia', eterapiaController.create);
 routes.put('/eterapia/:id', eterapiaController.update);
-routes.put('/eterapiaSetStatus/:id', eterapiaController.setStatus);
+routes.put('/eterapiaSetStatus/:id', eterapiaController.setStatusActive);
 routes.delete('/eterapia/:id', eterapiaController.delete);
 // routes.get('/participante', participanteController.list);
 // routes.post('/participante', participanteController.create);

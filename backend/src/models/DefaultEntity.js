@@ -4,12 +4,13 @@ const cryptHanddle = require('../crypt/cryptHanddle');
 module.exports = class DefaultEntity {
     constructor(id, table) {
         this.myId = id;
-        this.mydata = this.downloadMyData(id, table);
+        this.table = table;
+        this.mydata = this.downloadMyData(id);
     }
 
-    async downloadMyData(id, table) {
+    async downloadMyData(id) {
         try {
-            return await connectionDB(table)
+            return await connectionDB(this.table)
                     .select('*')
                     .where('id', id)
                     .first();
@@ -50,5 +51,83 @@ module.exports = class DefaultEntity {
         if (await this.isDeleted()) return {check: false, error: "Entity deleted"}
         if (check.activeChech && !await this.isActive()) return {check: false, error: "Entity inactive"}
         return {check: true, error: false}
+    }
+
+    async getMyRelationshipsWith(config = {}) {
+        const {check, error} = await this.checkMe();
+        if (!check) return {check, error};
+
+        const { otherTable, 
+                intermediateTable, 
+                columnMyIdFk, 
+                columnOtherIdFk, 
+                columnOtherStatus,
+                showInactives = false } = config;
+        
+        const relationships = await connectionDB(otherTable)
+            .select(`${otherTable}.*`)
+            .join(`${intermediateTable}`, `${otherTable}.id`, '=', `${intermediateTable}.${columnOtherIdFk}`)
+            .where(`${intermediateTable}.${columnMyIdFk}`, '=', this.myId)
+            .whereNot(`${intermediateTable}.${columnOtherStatus}`, 'deleted')
+            .whereNot(showInactives ? false : `${intermediateTable}.${columnOtherStatus}`, 'inactive');
+        
+            return { check: true, result: relationships};
+    }
+
+    async setMyStatusActive(config = {}) {
+        const {check, error} = await this.checkMe({ activeCheck: false });
+        if (!check) return {check, error};
+
+        const { 
+            active = true,
+            intermediateTableArray = [
+                {tableName, columnMyIdFk, columnMyStatus}
+            ],
+         } = config;
+
+        let flag
+            if (active === false)
+                flag = 'inactive'
+            else
+                flag = 'active'
+        await connectionDB.transaction(async trans => {
+            try {
+                await connectionDB(this.table).where('id', this.myId).update({status: flag})
+                intermediateTableArray.forEach(async table => {
+                    await connectionDB(table.tableName)
+                        .update(`${table.columnMyStatus}`, flag)
+                        .where(table.columnMyIdFk, this.myId)
+                });
+            }catch(err) {
+                return {error: err}
+            }
+        })
+
+        return { check: true, result: flag};
+    }
+
+    async deleteMeDeep(config = {}) {
+        const {check, error} = await this.checkMe();
+        if (!check) return {check, error};
+
+        const { 
+            intermediateTableArray = [
+                {tableName, columnMyIdFk, columnMyStatus}
+            ],
+         } = config;
+        await connectionDB.transaction(async trans => {
+            try {
+                await connectionDB(this.table).where('id', this.myId).update({status: "deleted"})
+                intermediateTableArray.forEach(async table => {
+                    await connectionDB(table.tableName)
+                        .update(`${table.columnMyStatus}`, "deleted")
+                        .where(table.columnMyIdFk, this.myId)
+                });
+            }catch(err) {
+                return {error: err}
+            }
+        })
+
+        return { check: true, result: 'deleted'};
     }
 }

@@ -9,6 +9,7 @@ module.exports = {
             const moderadores = await connectionDB('moderadores')
             .select('*')
             .whereNot('status', 'deleted')
+            .whereNot('status', 'inactive')
             .limit(5)
             .offset((page - 1) * 5);
             
