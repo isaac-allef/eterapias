@@ -1,7 +1,8 @@
 const connectionDB = require('../database/connection');
-const cryptHanddle = require('../crypt/cryptHanddle');
+const cryptHanddle = require('../handdles/cryptHanddle');
 const DefaultEntity = require('./DefaultEntity');
 const Moderador = require('./Moderador');
+const objectHanddle = require('../handdles/objectHanddle');
 
 module.exports = class Eterapia extends DefaultEntity{
     constructor(id) {
@@ -15,6 +16,17 @@ module.exports = class Eterapia extends DefaultEntity{
             columnMyIdFk: "id_eterapia_fk", 
             columnOtherIdFk: "id_moderador_fk", 
             columnOtherStatus: "status_moderador",
+            showInactives: false
+        });
+    }
+
+    async getMyParticipantes() {
+        return this.getMyRelationshipsWith({
+            otherTable: "participantes", 
+            intermediateTable: "eterapias_participantes", 
+            columnMyIdFk: "id_eterapia_fk", 
+            columnOtherIdFk: "id_participante_fk", 
+            columnOtherStatus: "status_participante",
             showInactives: false
         });
     }
@@ -49,29 +61,23 @@ module.exports = class Eterapia extends DefaultEntity{
         const {check, error} = await this.checkMe();
         if (!check) return {check, error};
 
-        const { id_entity, table, intermediateTable } = config;
-        
-        if(table != 'moderadores' && table != 'participantes')
-            return {check: false, error: "Table cannot be linked a eterapia in N to N"}
+        const { id_entity, table, intermediateTable, columnMyIdFk, columnOtherIdFk } = config;
 
         const entity = new DefaultEntity(id_entity, table);
         const checkError = await entity.checkMe();
         const checkEntity = checkError.check;
         const errorEntity = checkError.error;
         if (!checkEntity) return {checkEntity, errorEntity};
-        
-        let object = {};
-        if (table === 'moderadores') {
-            object = {
-                id_eterapia_fk: this.myId,
-                id_moderador_fk: id_entity
-            }
-        }else if (table === 'participantes') {
-            object = {
-                id_eterapia_fk: this.myId,
-                id_participante_fk: id_entity
-            }
+
+
+        let object = {
+            id_eterapia_fk: this.myId,
+            id_entity_fk: id_entity
         }
+
+        object = objectHanddle.renameKey(object, 'id_eterapia_fk', columnMyIdFk);
+        object = objectHanddle.renameKey(object, 'id_entity_fk', columnOtherIdFk);
+        
         await connectionDB(intermediateTable).insert(object)
         return { check: true, result: "Ok"};
     }
@@ -80,11 +86,11 @@ module.exports = class Eterapia extends DefaultEntity{
         const {check, error} = await this.checkMe();
         if (!check) return {check, error};
 
-        const { intermediateTable, columnMyIdFk, columnOtherIdFk, id_otherEntity } = config;
+        const { id_entity, intermediateTable, columnMyIdFk, columnOtherIdFk } = config;
 
         await connectionDB(intermediateTable)
                 .where(columnMyIdFk, this.myId)
-                .andWhere(columnOtherIdFk, id_otherEntity)
+                .andWhere(columnOtherIdFk, id_entity)
                 .del();
         
         return { check: true, result: "Ok"};

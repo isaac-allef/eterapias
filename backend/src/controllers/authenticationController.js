@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const connectionDB = require('../database/connection');
 const authConfig = require('../config/auth.json');
-const cryptHanddle = require('../crypt/cryptHanddle');
+const cryptHanddle = require('../handdles/cryptHanddle');
 
 module.exports = {
     async authenticationModeradores (request, response) {

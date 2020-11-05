@@ -1,5 +1,5 @@
 const connectionDB = require('../database/connection');
-const cryptHanddle = require('../crypt/cryptHanddle');
+const cryptHanddle = require('../handdles/cryptHanddle');
 
 module.exports = class DefaultEntity {
     constructor(id, table) {
@@ -92,7 +92,10 @@ module.exports = class DefaultEntity {
                 flag = 'active'
         await connectionDB.transaction(async trans => {
             try {
-                await connectionDB(this.table).where('id', this.myId).update({status: flag})
+                await connectionDB(this.table).where('id', this.myId).update({
+                    status: flag,
+                    updated_at: connectionDB.fn.now()
+                })
                 intermediateTableArray.forEach(async table => {
                     await connectionDB(table.tableName)
                         .update(`${table.columnMyStatus}`, flag)
@@ -117,7 +120,10 @@ module.exports = class DefaultEntity {
          } = config;
         await connectionDB.transaction(async trans => {
             try {
-                await connectionDB(this.table).where('id', this.myId).update({status: "deleted"})
+                await connectionDB(this.table).where('id', this.myId).update({
+                    status: "deleted",
+                    updated_at: connectionDB.fn.now()
+                })
                 intermediateTableArray.forEach(async table => {
                     await connectionDB(table.tableName)
                         .update(`${table.columnMyStatus}`, "deleted")

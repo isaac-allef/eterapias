@@ -2,16 +2,16 @@ const connectionDB = require('../database/connection');
 const cryptHanddle = require('../handdles/cryptHanddle');
 const DefaultEntity = require('./DefaultEntity');
 
-module.exports = class Moderador extends DefaultEntity{
+module.exports = class Participante extends DefaultEntity{
     constructor(id) {
-        super(id, 'moderadores');
+        super(id, 'participantes');
     }
 
     async getMyEterapias() {
         return this.getMyRelationshipsWith({
             otherTable: "eterapias", 
-            intermediateTable: "eterapias_moderadores", 
-            columnMyIdFk: "id_moderador_fk", 
+            intermediateTable: "eterapias_participantes", 
+            columnMyIdFk: "id_participante_fk", 
             columnOtherIdFk: "id_eterapia_fk", 
             columnOtherStatus: "status_eterapia",
             showInactives: false
@@ -23,9 +23,9 @@ module.exports = class Moderador extends DefaultEntity{
             active: active,
             intermediateTableArray: [
                 {
-                    tableName: 'eterapias_moderadores',
-                    columnMyIdFk: 'id_moderador_fk',
-                    columnMyStatus: 'status_moderador'
+                    tableName: 'eterapias_participantes',
+                    columnMyIdFk: 'id_participante_fk',
+                    columnMyStatus: 'status_participante'
                 },
             ]
         });
@@ -55,9 +55,9 @@ module.exports = class Moderador extends DefaultEntity{
         return this.deleteMeDeep({
             intermediateTableArray: [
                 {
-                    tableName: 'eterapias_moderadores',
-                    columnMyIdFk: 'id_moderador_fk',
-                    columnMyStatus: 'status_moderador'
+                    tableName: 'eterapias_participantes',
+                    columnMyIdFk: 'id_participante_fk',
+                    columnMyStatus: 'status_participante'
                 },
             ]
         });

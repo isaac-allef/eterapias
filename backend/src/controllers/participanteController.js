@@ -1,23 +1,20 @@
 const connectionDB = require('../database/connection');
 const cryptHanddle = require('../handdles/cryptHanddle');
 const Moderador = require('../models/Moderador');
+const Participante = require('../models/Participante');
 
 module.exports = {
     async list(request, response, next) {
         try {
             const { page=1 } = request.query;
-            const moderadores = await connectionDB('moderadores')
+            const participantes = await connectionDB('participantes')
             .select('*')
             .whereNot('status', 'deleted')
             .whereNot('status', 'inactive')
             .limit(5)
             .offset((page - 1) * 5);
             
-            moderadores.forEach( (moderador) => {
-                moderador.password = undefined;
-            });
-            
-            return response.json(moderadores);
+            return response.json(participantes);
         }catch(err) {
             next(err)
         }
@@ -27,8 +24,8 @@ module.exports = {
         try {
             const { id } = request.params;
 
-            const moderador = new Moderador(id);
-            const result = await moderador.getMyEterapias();
+            const participante = new Participante(id);
+            const result = await participante.getMyEterapias();
 
             if (!result.check)
                 return response.status(500).send({error: result.error})
@@ -44,32 +41,26 @@ module.exports = {
 
     async create(request, response, next) {
         try {
-            let { 
-                userName,
-                password,
+            const { 
                 fullName,
                 email,
                 whatsapp_tel,
                 city,
                 uf,
-                college
+                sex
             } = request.body;
-
-            password = await cryptHanddle.crypt(password);
         
-            const [ id ] = await connectionDB('moderadores').insert({
-                userName,
-                password,
+            const [ id ] = await connectionDB('participantes').insert({
                 fullName,
                 email,
                 whatsapp_tel,
                 city,
                 uf,
-                college
+                sex
             }).returning('id');
             return response.status(201).send({ 
                 id,
-                userName 
+                fullName 
             });
         }catch(err) {
             // return response.status(500).send({ error: err.detail});
@@ -81,8 +72,8 @@ module.exports = {
         try {
             const { id } = request.params;
 
-            const moderador = new Moderador(id);
-            const {check, error} = await moderador.checkMe();
+            const participante = new Participante(id);
+            const {check, error} = await participante.checkMe();
 
             if (!check)
                 return response.status(500).send({error: error})
@@ -93,16 +84,16 @@ module.exports = {
                 whatsapp_tel,
                 city,
                 uf,
-                college
+                sex
             } = request.body;
 
-            await connectionDB('moderadores').where('id', id).update({
+            await connectionDB('participantes').where('id', id).update({
                 fullName: fullName,
                 email: email,
                 whatsapp_tel: whatsapp_tel,
                 city: city,
                 uf: uf,
-                college: college,
+                sex: sex,
                 updated_at: connectionDB.fn.now()
             })
 
@@ -120,8 +111,8 @@ module.exports = {
             const { id } = request.params;
             const { active } = request.body;
             
-            const moderador = new Moderador(id);
-            const result = await moderador.setStatusActive(active);
+            const participante = new Participante(id);
+            const result = await participante.setStatusActive(active);
 
             if (!result.check)
                 return response.status(500).send({error: result.error})
@@ -137,43 +128,11 @@ module.exports = {
         }
     },
 
-    async updateLoginPass(request, response, next) {
-        try {
-            const { id } = request.params;
-            let { password, newUserName, newPassword } = request.body;
-            
-            const user = await connectionDB('moderadores')
-                .select('*')
-                .where('id', id)
-                .whereNot('status', 'deleted')
-                .whereNot('status', 'inactive')
-                .first();
-        
-            if(!user) {
-                return response.status(400).send({ error: 'User not found' });
-            }
-            if (!await cryptHanddle.compareUncryptCrypt(password, user.password)) {
-                return response.status(400).send({ error: 'Invalid password' });
-            }
-
-            newPassword = await cryptHanddle.crypt(newPassword);
-
-            await connectionDB('moderadores').where('id', id).update({
-                userName: newUserName,
-                password: newPassword,
-            })
-
-            response.status(200).send();
-        }catch(err) {
-            next(err)
-        }
-    },
-
     async delete(request, response, next) {
         try {
             const { id } = request.params;
-            const moderador = new Moderador(id);
-            const result = await moderador.deleteMe();
+            const participante = new Participante(id);
+            const result = await participante.deleteMe();
 
             if (!result.check)
                 return response.status(500).send({error: result.error})

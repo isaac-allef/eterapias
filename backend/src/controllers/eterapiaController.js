@@ -1,5 +1,5 @@
 const connectionDB = require('../database/connection');
-const cryptHanddle = require('../crypt/cryptHanddle');
+const cryptHanddle = require('../handdles/cryptHanddle');
 const Eterapia = require('../models/Eterapia');
 const { setStatusActive } = require('./moderadorController');
 
@@ -21,17 +21,36 @@ module.exports = {
 
     async listMyModeradores(request, response, next) {
         try {
-            const { myId } = request.body;
+            const { id } = request.params;
 
-            const eterapia = new Eterapia(myId);
+            const eterapia = new Eterapia(id);
             const result = await eterapia.getMyModeradores();
 
             if (!result.check)
                 return response.status(500).send({error: result.error})
             
             return response.status(200).send({
-                id: myId,
+                id: id,
                 myModeradores: result.result
+            })
+        }catch(err) {
+            next(err)
+        }
+    },
+
+    async listMyParticipantes(request, response, next) {
+        try {
+            const { id } = request.params;
+
+            const eterapia = new Eterapia(id);
+            const result = await eterapia.getMyParticipantes();
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+            
+            return response.status(200).send({
+                id: id,
+                myParticipantes: result.result
             })
         }catch(err) {
             next(err)
@@ -47,13 +66,16 @@ module.exports = {
                 app
             } = request.body;
         
-            await connectionDB('eterapias').insert({
+            const [ id ] = await connectionDB('eterapias').insert({
                 title,
                 description,
                 frequency,
                 app
+            }).returning('id');
+            return response.status(201).send({
+                id,
+                title
             });
-            return response.status(201).send();
         }catch(err) {
             // return response.status(500).send({ error: err.detail});
             next(err)
@@ -63,13 +85,12 @@ module.exports = {
     async update(request, response, next) {
         try {
             const { id } = request.params;
-            const eterapia = await connectionDB('eterapias')
-                .select('status')
-                .where('id', id)
-                .first();
+            
+            const eterapia = new Eterapia(id);
+            const {check, error} = await eterapia.checkMe();
 
-            if (!eterapia || eterapia.status === 'deleted')
-                return response.status(500).send({ error: "Not found"});
+            if (!check)
+                return response.status(500).send({error: error})
             
             const {
                 title,
@@ -82,10 +103,14 @@ module.exports = {
                 title: title,
                 description: description,
                 frequency: frequency,
-                app: app
+                app: app,
+                updated_at: connectionDB.fn.now()
             })
 
-            response.status(200).send();
+            response.status(200).send({
+                id,
+                its: 'up to date'
+            });
         }catch(err) {
             next(err)
         }
@@ -120,7 +145,9 @@ module.exports = {
             const result = await eterapia.linking({
                 id_entity: id_moderador,
                 table: 'moderadores',
-                intermediateTable: 'eterapias_moderadores'
+                intermediateTable: 'eterapias_moderadores',
+                columnMyIdFk: 'id_eterapia_fk',
+                columnOtherIdFk: 'id_moderador_fk'
             });
 
             if (!result.check)
@@ -143,10 +170,10 @@ module.exports = {
 
             const eterapia = new Eterapia(id_eterapia);
             const result = await eterapia.unlinking({ 
+                id_entity: id_moderador ,
                 intermediateTable: 'eterapias_moderadores', 
                 columnMyIdFk: 'id_eterapia_fk', 
-                columnOtherIdFk: 'id_moderador_fk', 
-                id_otherEntity: id_moderador 
+                columnOtherIdFk: 'id_moderador_fk'
             });
 
             if (!result.check)
@@ -155,6 +182,59 @@ module.exports = {
             return response.status(200).send({
                 id_eterapia: id_eterapia,
                 id_moderador: id_moderador,
+                unlink: result.result
+            })
+
+        }catch(err) {
+            next(err)
+        }
+    },
+
+    async linkParticipante(request, response, next) {
+        try {
+            const { id_eterapia, id_participante } = request.params;
+            
+            const eterapia = new Eterapia(id_eterapia);
+            const result = await eterapia.linking({
+                id_entity: id_participante,
+                table: 'participantes',
+                intermediateTable: 'eterapias_participantes',
+                columnMyIdFk: 'id_eterapia_fk',
+                columnOtherIdFk: 'id_participante_fk'
+            });
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+            
+            return response.status(200).send({
+                id_eterapia: id_eterapia,
+                id_participante: id_participante,
+                link: result.result
+            })
+
+        }catch(err) {
+            next(err)
+        }
+    },
+
+    async unlinkParticipante(request, response, next) {
+        try {
+            const { id_eterapia, id_participante } = request.params;
+
+            const eterapia = new Eterapia(id_eterapia);
+            const result = await eterapia.unlinking({ 
+                id_entity: id_participante ,
+                intermediateTable: 'eterapias_participantes', 
+                columnMyIdFk: 'id_eterapia_fk', 
+                columnOtherIdFk: 'id_participante_fk'
+            });
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+            
+            return response.status(200).send({
+                id_eterapia: id_eterapia,
+                id_participante: id_participante,
                 unlink: result.result
             })
 
