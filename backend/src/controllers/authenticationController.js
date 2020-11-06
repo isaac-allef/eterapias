@@ -16,7 +16,7 @@ module.exports = {
             .first();
     
         if(!user) {
-            return response.status(400).send({ error: 'User not found' });
+            return response.status(404).send({ error: 'User not found' });
         }
         // const pass = await bcrypt.hash(user.password, 10)
         if (!await cryptHanddle.compareUncryptCrypt(password, user.password)) {

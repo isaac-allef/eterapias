@@ -19,38 +19,19 @@ module.exports = {
         }
     },
 
-    async listMyModeradores(request, response, next) {
+    async listMyInformations(request, response, next) {
         try {
             const { id } = request.params;
 
             const eterapia = new Eterapia(id);
-            const result = await eterapia.getMyModeradores();
+            let result = await eterapia.getMyData();
 
             if (!result.check)
                 return response.status(500).send({error: result.error})
             
             return response.status(200).send({
                 id: id,
-                myModeradores: result.result
-            })
-        }catch(err) {
-            next(err)
-        }
-    },
-
-    async listMyParticipantes(request, response, next) {
-        try {
-            const { id } = request.params;
-
-            const eterapia = new Eterapia(id);
-            const result = await eterapia.getMyParticipantes();
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                myParticipantes: result.result
+                myInformations: result.result
             })
         }catch(err) {
             next(err)
@@ -137,6 +118,46 @@ module.exports = {
         }
     },
 
+    async delete(request, response, next) {
+        try {
+            const { id } = request.params;
+            const eterapia = new Eterapia(id);
+            const result = await eterapia.deleteMe();
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+            
+            return response.status(200).send({
+                id: id,
+                status: result.result
+            })
+        }catch(err) {
+            // return response.status(500).send({ error: err.detail});
+            next(err)
+        }
+    },
+
+
+
+    async listMyModeradores(request, response, next) {
+        try {
+            const { id } = request.params;
+
+            const eterapia = new Eterapia(id);
+            const result = await eterapia.getMyModeradores();
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+            
+            return response.status(200).send({
+                id: id,
+                myModeradores: result.result
+            })
+        }catch(err) {
+            next(err)
+        }
+    },
+
     async linkModerador(request, response, next) {
         try {
             const { id_eterapia, id_moderador } = request.params;
@@ -185,6 +206,27 @@ module.exports = {
                 unlink: result.result
             })
 
+        }catch(err) {
+            next(err)
+        }
+    },
+
+
+
+    async listMyParticipantes(request, response, next) {
+        try {
+            const { id } = request.params;
+
+            const eterapia = new Eterapia(id);
+            const result = await eterapia.getMyParticipantes();
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+            
+            return response.status(200).send({
+                id: id,
+                myParticipantes: result.result
+            })
         }catch(err) {
             next(err)
         }
@@ -243,22 +285,27 @@ module.exports = {
         }
     },
 
-    async delete(request, response, next) {
+    async listMyEncontros(request, response, next) {
         try {
+            const { page=1 } = request.query;
             const { id } = request.params;
+
             const eterapia = new Eterapia(id);
-            const result = await eterapia.deleteMe();
+            const result = await eterapia.checkMe();
 
             if (!result.check)
                 return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                status: result.result
-            })
+
+            const encontros = await connectionDB('encontros')
+                .select('*')
+                .whereNot('status', 'deleted')
+                .whereNot('status', 'inactive')
+                .where('id_eterapia_fk', id)
+                .limit(5)
+                .offset((page - 1) * 5);;
+            return response.json(encontros);
         }catch(err) {
-            // return response.status(500).send({ error: err.detail});
             next(err)
         }
-    }
+    },
 }

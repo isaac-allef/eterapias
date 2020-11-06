@@ -20,6 +20,25 @@ module.exports = {
         }
     },
 
+    async listMyInformations(request, response, next) {
+        try {
+            const { id } = request.params;
+
+            const participante = new Participante(id);
+            let result = await participante.getMyData();
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+            
+            return response.status(200).send({
+                id: id,
+                myInformations: result.result
+            })
+        }catch(err) {
+            next(err)
+        }
+    },
+
     async listMyEterapias(request, response, next) {
         try {
             const { id } = request.params;

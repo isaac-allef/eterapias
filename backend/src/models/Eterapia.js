@@ -3,6 +3,7 @@ const cryptHanddle = require('../handdles/cryptHanddle');
 const DefaultEntity = require('./DefaultEntity');
 const Moderador = require('./Moderador');
 const objectHanddle = require('../handdles/objectHanddle');
+const Encontro = require('./Encontro');
 
 module.exports = class Eterapia extends DefaultEntity{
     constructor(id) {
@@ -32,6 +33,18 @@ module.exports = class Eterapia extends DefaultEntity{
     }
 
     async setStatusActive(active) {
+        // setando status nos encontros filhos
+        // e cada encontro filho seta status nos seus filhos
+        const idEncontros = await connectionDB('encontros')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_eterapia_fk', this.myId)
+        idEncontros.forEach(async (id) => {
+            const encontro = new Encontro(id.id);
+            await encontro.setStatusActive(active)
+        })
+        //
+
         return this.setMyStatusActive({
             active: active,
             intermediateTableArray: [
@@ -40,11 +53,26 @@ module.exports = class Eterapia extends DefaultEntity{
                     columnMyIdFk: 'id_eterapia_fk',
                     columnMyStatus: 'status_eterapia'
                 },
+                {
+                    tableName: 'eterapias_participantes',
+                    columnMyIdFk: 'id_eterapia_fk',
+                    columnMyStatus: 'status_eterapia'
+                },
             ]
         });
     }
 
     async deleteMe() {
+        // setando deleted nos encontros filhos
+        // e cada encontro filho seta deleted nos seus filhos
+        const idEncontros = await connectionDB('encontros')
+                .select('id')
+                .where('id_eterapia_fk', this.myId)
+        idEncontros.forEach(async (id) => {
+            const encontro = new Encontro(id.id);
+            await encontro.deleteMe()
+        })
+        //
         return this.deleteMeDeep({
             intermediateTableArray: [
                 {

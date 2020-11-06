@@ -21,7 +21,12 @@ module.exports = class DefaultEntity {
     }
 
     async getMyData() {
-        return await this.mydata;
+        const {check, error} = await this.checkMe();
+        if (!check) return {check, error};
+
+        const result = await this.mydata;
+
+        return { check: true, result: result};
     }
 
     async iExist() {
@@ -82,14 +87,19 @@ module.exports = class DefaultEntity {
             active = true,
             intermediateTableArray = [
                 {tableName, columnMyIdFk, columnMyStatus}
-            ],
+            ]
          } = config;
+        
+        const isActive = await this.isActive();
 
         let flag
-            if (active === false)
+            if (active === false && isActive === true)
                 flag = 'inactive'
-            else
+            else if (active === true && isActive === false)
                 flag = 'active'
+            else
+                return { error: "This setting is already working" };
+
         await connectionDB.transaction(async trans => {
             try {
                 await connectionDB(this.table).where('id', this.myId).update({
