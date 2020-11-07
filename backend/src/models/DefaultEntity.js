@@ -58,7 +58,7 @@ module.exports = class DefaultEntity {
         return {check: true, error: false}
     }
 
-    async getMyRelationshipsWith(config = {}) {
+    async getMyRelationshipsWithNtoN(config = {}) {
         const {check, error} = await this.checkMe();
         if (!check) return {check, error};
 
@@ -79,7 +79,7 @@ module.exports = class DefaultEntity {
             return { check: true, result: relationships};
     }
 
-    async setMyStatusActive(config = {}) {
+    async setMyStatusActiveNtoN(config = {}) {
         const {check, error} = await this.checkMe({ activeCheck: false });
         if (!check) return {check, error};
 
@@ -102,10 +102,10 @@ module.exports = class DefaultEntity {
 
         await connectionDB.transaction(async trans => {
             try {
-                await connectionDB(this.table).where('id', this.myId).update({
-                    status: flag,
-                    updated_at: connectionDB.fn.now()
-                })
+                // await connectionDB(this.table).where('id', this.myId).update({
+                //     status: flag,
+                //     updated_at: connectionDB.fn.now()
+                // })
                 intermediateTableArray.forEach(async table => {
                     await connectionDB(table.tableName)
                         .update(`${table.columnMyStatus}`, flag)
@@ -119,7 +119,7 @@ module.exports = class DefaultEntity {
         return { check: true, result: flag};
     }
 
-    async deleteMeDeep(config = {}) {
+    async deleteMeDeepNtoN(config = {}) {
         const {check, error} = await this.checkMe();
         if (!check) return {check, error};
 
@@ -139,6 +139,74 @@ module.exports = class DefaultEntity {
                         .update(`${table.columnMyStatus}`, "deleted")
                         .where(table.columnMyIdFk, this.myId)
                 });
+            }catch(err) {
+                return {error: err}
+            }
+        })
+
+        return { check: true, result: 'deleted'};
+    }
+
+
+
+    
+    async getMyRelationshipsWith1toN(config = {}) {
+        const {check, error} = await this.checkMe();
+        if (!check) return {check, error};
+
+        const { otherTable,
+                columnMyIdFk,
+                showInactives = false } = config;
+        
+        const relationships = await connectionDB(otherTable)
+            .select(`${otherTable}.*`)
+            .where(columnMyIdFk, this.myId)
+            .whereNot(`${otherTable}.status`, 'deleted')
+            .whereNot(showInactives ? false : `${otherTable}.status`, 'inactive');
+        
+            return { check: true, result: relationships};
+    }
+
+    async setMyStatus(active = true) {
+        const {check, error} = await this.checkMe({ activeCheck: false });
+        if (!check) return {check, error};
+
+         const isActive = await this.isActive();
+        //  console.log(isActive)
+        //  console.log(active)
+
+         let flag
+             if (active === false && isActive === true)
+                 flag = 'inactive'
+             else if (active === true && isActive === false)
+                 flag = 'active'
+             else
+                 return { error: "This setting is already working" };
+        
+        await connectionDB.transaction(async trans => {
+            try {
+                await connectionDB(this.table).where('id', this.myId).update({
+                    status: flag,
+                    updated_at: connectionDB.fn.now()
+                })
+            }catch(err) {
+                return {error: err}
+            }
+        })
+
+        return { check: true, result: flag};
+    }
+
+    async deleteMeSimple() {
+        const {check, error} = await this.checkMe();
+        if (!check) return {check, error};
+        
+        await connectionDB.transaction(async trans => {
+            try {
+                await connectionDB(this.table).where('id', this.myId).update({
+                    status: 'deleted',
+                    updated_at: connectionDB.fn.now()
+                })
             }catch(err) {
                 return {error: err}
             }

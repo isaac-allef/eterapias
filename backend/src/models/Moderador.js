@@ -8,7 +8,7 @@ module.exports = class Moderador extends DefaultEntity{
     }
 
     async getMyEterapias() {
-        return this.getMyRelationshipsWith({
+        return this.getMyRelationshipsWithNtoN({
             otherTable: "eterapias", 
             intermediateTable: "eterapias_moderadores", 
             columnMyIdFk: "id_moderador_fk", 
@@ -19,7 +19,7 @@ module.exports = class Moderador extends DefaultEntity{
     }
 
     async setStatusActive(active) {
-        return this.setMyStatusActive({
+        return this.setMyStatusActiveNtoN({
             active: active,
             intermediateTableArray: [
                 {
@@ -52,7 +52,7 @@ module.exports = class Moderador extends DefaultEntity{
     }
 
     async deleteMe() {
-        return this.deleteMeDeep({
+        return this.deleteMeDeepNtoN({
             intermediateTableArray: [
                 {
                     tableName: 'eterapias_moderadores',

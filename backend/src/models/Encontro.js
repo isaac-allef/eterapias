@@ -1,20 +1,20 @@
 const connectionDB = require('../database/connection');
 const cryptHanddle = require('../handdles/cryptHanddle');
 const DefaultEntity = require('./DefaultEntity');
-const DefaultSimpleEntity = require('./DefaultSimpleEntity');
+const Presenca = require('./Presenca');
 
-module.exports = class Encontro extends DefaultSimpleEntity{
+module.exports = class Encontro extends DefaultEntity{
     constructor(id) {
         super(id, 'encontros');
     }
 
-    // async getMyPresencas() {
-    //     return this.getMyRelationshipsWith({
-    //         otherTable: 'presencas',
-    //         columnMyIdFk: 'id_encontro_fk',
-    //         showInactives: false
-    //     });
-    // }
+    async getMyPresencas() {
+        return this.getMyRelationshipsWith({
+            otherTable: 'presencas',
+            columnMyIdFk: 'id_encontro_fk',
+            showInactives: false
+        });
+    }
 
     // async getMyDiariosDeCampo() {
     //     return this.getMyRelationshipsWith({
@@ -25,25 +25,30 @@ module.exports = class Encontro extends DefaultSimpleEntity{
     // }
 
     async setStatusActive(active) {
-        return this.setMyStatusActive({
-            active,
-            subTableArray: [
-                {
-                    tableName: 'presencas',
-                    columnMyIdFk: 'id_encontro_fk'
-                },
-            ]
-        });
+
+        const presencas = await connectionDB('presencas')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_encontro_fk', this.myId)
+        presencas.forEach(async (id) => {
+            const presenca = new Presenca(id.id);
+            await presenca.setStatusActive(active)
+        })
+
+        return this.setMyStatus(active);
     }
 
     async deleteMe() {
-        return this.deleteMeDeep({
-            subTableArray: [
-                {
-                    tableName: 'presencas',
-                    columnMyIdFk: 'id_encontro_fk'
-                },
-            ]
-        });
+
+        const presencas = await connectionDB('presencas')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_encontro_fk', this.myId)
+        presencas.forEach(async (id) => {
+            const presenca = new Presenca(id.id);
+            await presenca.deleteMe()
+        })
+
+        return this.deleteMeSimple();
     }
 }

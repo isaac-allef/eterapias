@@ -33,6 +33,7 @@ module.exports = class Eterapia extends DefaultEntity{
     }
 
     async setStatusActive(active) {
+
         // setando status nos encontros filhos
         // e cada encontro filho seta status nos seus filhos
         const idEncontros = await connectionDB('encontros')
@@ -43,9 +44,11 @@ module.exports = class Eterapia extends DefaultEntity{
             const encontro = new Encontro(id.id);
             await encontro.setStatusActive(active)
         })
-        //
 
-        return this.setMyStatusActive({
+        this.setMyStatus(active);
+        //
+        
+        return this.setMyStatusActiveNtoN({
             active: active,
             intermediateTableArray: [
                 {
@@ -72,8 +75,11 @@ module.exports = class Eterapia extends DefaultEntity{
             const encontro = new Encontro(id.id);
             await encontro.deleteMe()
         })
+
+        this.deleteMeSimple();
+
         //
-        return this.deleteMeDeep({
+        return this.deleteMeDeepNtoN({
             intermediateTableArray: [
                 {
                     tableName: 'eterapias_moderadores',
