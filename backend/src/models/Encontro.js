@@ -1,6 +1,7 @@
 const connectionDB = require('../database/connection');
 const cryptHanddle = require('../handdles/cryptHanddle');
 const DefaultEntity = require('./DefaultEntity');
+const DiarioDeCampo = require('./DiarioDeCampo');
 const Presenca = require('./Presenca');
 
 module.exports = class Encontro extends DefaultEntity{
@@ -37,6 +38,15 @@ module.exports = class Encontro extends DefaultEntity{
             await presenca.setStatusActive(active)
         })
 
+        const diarios = await connectionDB('diarios_de_campo')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_moderador_fk', this.myId)
+        diarios.forEach(async (id) => {
+            const presenca = new DiarioDeCampo(id.id);
+            await presenca.setStatusActive(active)
+        })
+
         return result;
     }
 
@@ -51,6 +61,15 @@ module.exports = class Encontro extends DefaultEntity{
         presencas.forEach(async (id) => {
             const presenca = new Presenca(id.id);
             await presenca.deleteMe()
+        })
+
+        const diarios = await connectionDB('diarios_de_campo')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_moderador_fk', this.myId)
+        diarios.forEach(async (id) => {
+            const diarios = new DiarioDeCampo(id.id);
+            await diarios.deleteMe()
         })
 
         return result;

@@ -1,6 +1,7 @@
 const connectionDB = require('../database/connection');
 const cryptHanddle = require('../handdles/cryptHanddle');
 const DefaultEntity = require('./DefaultEntity');
+const DiarioDeCampo = require('./DiarioDeCampo');
 
 module.exports = class Moderador extends DefaultEntity{
     constructor(id) {
@@ -19,7 +20,18 @@ module.exports = class Moderador extends DefaultEntity{
     }
 
     async setStatusActive(active) {
-        this.setMyStatus(active)
+        
+        await this.setMyStatus(active);
+
+        const diarios = await connectionDB('diarios_de_campo')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_moderador_fk', this.myId)
+        diarios.forEach(async (id) => {
+            const presenca = new DiarioDeCampo(id.id);
+            await presenca.setStatusActive(active)
+        })
+
         return this.setMyStatusActiveNtoN({
             active: active,
             intermediateTableArray: [
@@ -53,6 +65,18 @@ module.exports = class Moderador extends DefaultEntity{
     }
 
     async deleteMe() {
+        
+        await this.deleteMeSimple();
+
+        const diarios = await connectionDB('diarios_de_campo')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_moderador_fk', this.myId)
+        diarios.forEach(async (id) => {
+            const presenca = new DiarioDeCampo(id.id);
+            await presenca.deleteMe()
+        })
+
         return this.deleteMeDeepNtoN({
             intermediateTableArray: [
                 {

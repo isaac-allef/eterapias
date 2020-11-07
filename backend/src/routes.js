@@ -8,7 +8,7 @@ const moderadorController = require('./controllers/moderadorController');
 const eterapiaController = require('./controllers/eterapiaController');
 const participanteController = require('./controllers/participanteController');
 const encontroController = require('./controllers/encontroController');
-const presencaController = require('./controllers/presencaController');
+const presencaController = require('./controllers/diariosDeCampoController');
 
 const routes = express.Router();
 
@@ -65,6 +65,12 @@ routes.delete('/encontro/:id', encontroController.delete);
 routes.get('/encontro/:id/presencas', encontroController.listMyPresencas);
 routes.post('/encontro/presenca', encontroController.createPresenca);
 routes.delete('/encontro/:id/presenca', encontroController.deletePresenca);
+
+
+routes.get('/encontro/:id/diarios', encontroController.listMyDiariosDeCampo);
+routes.get('/moderador/:id/diarios', moderadorController.listMyDiariosDeCampo);
+routes.post('/moderador/diario', moderadorController.createDiarioDeCampo);
+routes.delete('/moderador/:id_moderador/diario/:id_diario', moderadorController.deleteDiarioDeCampo);
 
 
 // routes.get('/presencas', presencaController.list);

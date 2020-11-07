@@ -119,6 +119,33 @@ module.exports = {
 
 
 
+
+    async listMyDiariosDeCampo(request, response, next) {
+        try {
+            const { page=1 } = request.query;
+            const { id } = request.params;
+
+            const encontro = new Encontro(id);
+            const result = await encontro.checkMe();
+
+            if (!result.check)
+                return response.status(500).send({error: result.error})
+
+            const diarios_de_campo = await connectionDB('diarios_de_campo')
+                .select('*')
+                .whereNot('status', 'deleted')
+                .whereNot('status', 'inactive')
+                .where('id_encontro_fk', id)
+                .limit(5)
+                .offset((page - 1) * 5);;
+            return response.json(diarios_de_campo);
+        }catch(err) {
+            next(err)
+        }
+    },
+
+
+
     async listMyPresencas(request, response, next) {
         try {
             const { page=1 } = request.query;
@@ -130,14 +157,14 @@ module.exports = {
             if (!result.check)
                 return response.status(500).send({error: result.error})
 
-            const encontros = await connectionDB('presencas')
+            const presencas = await connectionDB('presencas')
                 .select('*')
                 .whereNot('status', 'deleted')
                 .whereNot('status', 'inactive')
                 .where('id_encontro_fk', id)
                 .limit(5)
                 .offset((page - 1) * 5);;
-            return response.json(encontros);
+            return response.json(presencas);
         }catch(err) {
             next(err)
         }
