@@ -26,6 +26,8 @@ module.exports = class Encontro extends DefaultEntity{
 
     async setStatusActive(active) {
 
+        const result = await this.setMyStatus(active);
+
         const presencas = await connectionDB('presencas')
                 .select('id')
                 .whereNot('status', 'deleted')
@@ -35,7 +37,7 @@ module.exports = class Encontro extends DefaultEntity{
             await presenca.setStatusActive(active)
         })
 
-        return this.setMyStatus(active);
+        return result;
     }
 
     async deleteMe() {

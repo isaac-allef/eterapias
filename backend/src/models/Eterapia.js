@@ -34,6 +34,8 @@ module.exports = class Eterapia extends DefaultEntity{
 
     async setStatusActive(active) {
 
+        this.setMyStatus(active);
+
         // setando status nos encontros filhos
         // e cada encontro filho seta status nos seus filhos
         const idEncontros = await connectionDB('encontros')
@@ -44,8 +46,6 @@ module.exports = class Eterapia extends DefaultEntity{
             const encontro = new Encontro(id.id);
             await encontro.setStatusActive(active)
         })
-
-        this.setMyStatus(active);
         //
         
         return this.setMyStatusActiveNtoN({

@@ -19,6 +19,7 @@ module.exports = class Moderador extends DefaultEntity{
     }
 
     async setStatusActive(active) {
+        this.setMyStatus(active)
         return this.setMyStatusActiveNtoN({
             active: active,
             intermediateTableArray: [
