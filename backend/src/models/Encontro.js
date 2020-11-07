@@ -42,6 +42,8 @@ module.exports = class Encontro extends DefaultEntity{
 
     async deleteMe() {
 
+        const result = await this.deleteMeSimple();
+
         const presencas = await connectionDB('presencas')
                 .select('id')
                 .whereNot('status', 'deleted')
@@ -51,6 +53,6 @@ module.exports = class Encontro extends DefaultEntity{
             await presenca.deleteMe()
         })
 
-        return this.deleteMeSimple();
+        return result;
     }
 }

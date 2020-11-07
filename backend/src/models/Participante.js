@@ -65,6 +65,18 @@ module.exports = class Participante extends DefaultEntity{
     }
 
     async deleteMe() {
+
+        await this.deleteMeSimple();
+
+        const presencas = await connectionDB('presencas')
+                .select('id')
+                .whereNot('status', 'deleted')
+                .where('id_participante_fk', this.myId)
+        presencas.forEach(async (id) => {
+            const presenca = new Presenca(id.id);
+            await presenca.deleteMe()
+        })
+        
         return this.deleteMeDeepNtoN({
             intermediateTableArray: [
                 {

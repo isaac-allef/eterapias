@@ -66,6 +66,9 @@ module.exports = class Eterapia extends DefaultEntity{
     }
 
     async deleteMe() {
+
+        this.deleteMeSimple();
+        
         // setando deleted nos encontros filhos
         // e cada encontro filho seta deleted nos seus filhos
         const idEncontros = await connectionDB('encontros')
@@ -75,8 +78,6 @@ module.exports = class Eterapia extends DefaultEntity{
             const encontro = new Encontro(id.id);
             await encontro.deleteMe()
         })
-
-        this.deleteMeSimple();
 
         //
         return this.deleteMeDeepNtoN({
