@@ -11,7 +11,7 @@ module.exports = class Eterapia extends DefaultEntity{
     }
 
     async getMyModeradores() {
-        return this.getMyRelationshipsWith({
+        return this.getMyRelationshipsWithNtoN({
             otherTable: "moderadores", 
             intermediateTable: "eterapias_moderadores", 
             columnMyIdFk: "id_eterapia_fk", 
@@ -22,7 +22,7 @@ module.exports = class Eterapia extends DefaultEntity{
     }
 
     async getMyParticipantes() {
-        return this.getMyRelationshipsWith({
+        return this.getMyRelationshipsWithNtoN({
             otherTable: "participantes", 
             intermediateTable: "eterapias_participantes", 
             columnMyIdFk: "id_eterapia_fk", 
