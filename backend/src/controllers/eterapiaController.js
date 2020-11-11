@@ -1,38 +1,33 @@
 const connectionDB = require('../database/connection');
 const cryptHanddle = require('../handdles/cryptHanddle');
 const Eterapia = require('../models/Eterapia');
-const { setStatusActive } = require('./moderadorController');
 
 module.exports = {
     async list(request, response, next) {
         try {
-            const { page=1 } = request.query;
-            const eterapias = await connectionDB('eterapias')
-                .select('*')
-                .whereNot('status', 'deleted')
-                .whereNot('status', 'inactive')
-                .limit(5)
-                .offset((page - 1) * 5);;
-            return response.json(eterapias);
-        }catch(err) {
-            next(err)
-        }
-    },
-
-    async listMyInformations(request, response, next) {
-        try {
-            const { id } = request.params;
-
-            const eterapia = new Eterapia(id);
-            let result = await eterapia.getMyData();
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                myInformations: result.result
-            })
+            const { page=1, 
+                limit=5, 
+                orderBy='title', 
+                ascDesc='asc', 
+                id,
+                moderador_id,
+                participante_id,
+                get='*'
+            } = request.query;
+            const eterapiaList = await Eterapia.list(page, limit, orderBy, ascDesc, id, moderador_id, participante_id, get)
+            return response.json({
+                "metadata": {
+                    page, 
+                    limit, 
+                    orderBy, 
+                    ascDesc, 
+                    id,
+                    moderador_id,
+                    participante_id,
+                    get
+                },
+                "result": eterapiaList
+            });
         }catch(err) {
             next(err)
         }
@@ -46,19 +41,15 @@ module.exports = {
                 frequency,
                 app
             } = request.body;
-        
-            const [ id ] = await connectionDB('eterapias').insert({
+
+            const id = await Eterapia.create({
                 title,
                 description,
                 frequency,
                 app
-            }).returning('id');
-            return response.status(201).send({
-                id,
-                title
-            });
+            })
+            return response.status(201).json({id: id});
         }catch(err) {
-            // return response.status(500).send({ error: err.detail});
             next(err)
         }
     },
@@ -66,54 +57,26 @@ module.exports = {
     async update(request, response, next) {
         try {
             const { id } = request.params;
-            
-            const eterapia = new Eterapia(id);
-            const {check, error} = await eterapia.checkMe();
 
-            if (!check)
-                return response.status(500).send({error: error})
-            
             const {
                 title,
                 description,
                 frequency,
-                app,
+                app
             } = request.body;
 
-            await connectionDB('eterapias').where('id', id).update({
-                title: title,
-                description: description,
-                frequency: frequency,
-                app: app,
-                updated_at: connectionDB.fn.now()
+            const numberOfRawUpdated = await Eterapia.update(id, {
+                title,
+                description,
+                frequency,
+                app
             })
 
-            response.status(200).send({
-                id,
-                its: 'up to date'
-            });
-        }catch(err) {
-            next(err)
-        }
-    },
+            if(!numberOfRawUpdated)
+                return response.status(404).json({status: 'Eterapia not found'})
 
-    async setStatusActive(request, response, next) {
-        try {
-            const { id } = request.params;
-            const { active } = request.body;
-            
-            const eterapia = new Eterapia(id);
-            const result = await eterapia.setStatusActive(active);
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                status: result.result
-            })
+            return response.status(200).json();
         }catch(err) {
-            // return response.status(500).send({ error: err.detail});
             next(err)
         }
     },
@@ -121,38 +84,13 @@ module.exports = {
     async delete(request, response, next) {
         try {
             const { id } = request.params;
-            const eterapia = new Eterapia(id);
-            const result = await eterapia.deleteMe();
 
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                status: result.result
-            })
-        }catch(err) {
-            // return response.status(500).send({ error: err.detail});
-            next(err)
-        }
-    },
+            const numberOfRawDeleted = await Eterapia.delete(id)
 
+            if(!numberOfRawDeleted)
+                return response.status(404).json({status: 'Eterapia not found'})
 
-
-    async listMyModeradores(request, response, next) {
-        try {
-            const { id } = request.params;
-
-            const eterapia = new Eterapia(id);
-            const result = await eterapia.getMyModeradores();
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                myModeradores: result.result
-            })
+            return response.status(200).json();
         }catch(err) {
             next(err)
         }
@@ -161,24 +99,10 @@ module.exports = {
     async linkModerador(request, response, next) {
         try {
             const { id_eterapia, id_moderador } = request.params;
-            
-            const eterapia = new Eterapia(id_eterapia);
-            const result = await eterapia.linking({
-                id_entity: id_moderador,
-                table: 'moderadores',
-                intermediateTable: 'eterapias_moderadores',
-                columnMyIdFk: 'id_eterapia_fk',
-                columnOtherIdFk: 'id_moderador_fk'
-            });
 
-            if (!result.check)
-                return response.status(500).send({error: result.error})
+            await Eterapia.linkModerador(id_eterapia, id_moderador);
             
-            return response.status(200).send({
-                id_eterapia: id_eterapia,
-                id_moderador: id_moderador,
-                link: result.result
-            })
+            return response.status(200).send()
 
         }catch(err) {
             next(err)
@@ -188,45 +112,14 @@ module.exports = {
     async unlinkModerador(request, response, next) {
         try {
             const { id_eterapia, id_moderador } = request.params;
-
-            const eterapia = new Eterapia(id_eterapia);
-            const result = await eterapia.unlinking({ 
-                id_entity: id_moderador ,
-                intermediateTable: 'eterapias_moderadores', 
-                columnMyIdFk: 'id_eterapia_fk', 
-                columnOtherIdFk: 'id_moderador_fk'
-            });
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
             
-            return response.status(200).send({
-                id_eterapia: id_eterapia,
-                id_moderador: id_moderador,
-                unlink: result.result
-            })
-
-        }catch(err) {
-            next(err)
-        }
-    },
-
-
-
-    async listMyParticipantes(request, response, next) {
-        try {
-            const { id } = request.params;
-
-            const eterapia = new Eterapia(id);
-            const result = await eterapia.getMyParticipantes();
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
+            const numberOfRawDeleted = await Eterapia.unlinkModerador(id_eterapia, id_moderador);
             
-            return response.status(200).send({
-                id: id,
-                myParticipantes: result.result
-            })
+            if (!numberOfRawDeleted)
+                return response.status(404).send({status: "Relationship not found"})
+
+            return response.status(200).send()
+
         }catch(err) {
             next(err)
         }
@@ -236,23 +129,9 @@ module.exports = {
         try {
             const { id_eterapia, id_participante } = request.params;
             
-            const eterapia = new Eterapia(id_eterapia);
-            const result = await eterapia.linking({
-                id_entity: id_participante,
-                table: 'participantes',
-                intermediateTable: 'eterapias_participantes',
-                columnMyIdFk: 'id_eterapia_fk',
-                columnOtherIdFk: 'id_participante_fk'
-            });
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
+            await Eterapia.linkParticipante(id_eterapia, id_participante);
             
-            return response.status(200).send({
-                id_eterapia: id_eterapia,
-                id_participante: id_participante,
-                link: result.result
-            })
+            return response.status(200).send()
 
         }catch(err) {
             next(err)
@@ -262,48 +141,14 @@ module.exports = {
     async unlinkParticipante(request, response, next) {
         try {
             const { id_eterapia, id_participante } = request.params;
-
-            const eterapia = new Eterapia(id_eterapia);
-            const result = await eterapia.unlinking({ 
-                id_entity: id_participante ,
-                intermediateTable: 'eterapias_participantes', 
-                columnMyIdFk: 'id_eterapia_fk', 
-                columnOtherIdFk: 'id_participante_fk'
-            });
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
             
-            return response.status(200).send({
-                id_eterapia: id_eterapia,
-                id_participante: id_participante,
-                unlink: result.result
-            })
+            const numberOfRawDeleted = await Eterapia.unlinkParticipante(id_eterapia, id_participante);
+            
+            if (!numberOfRawDeleted)
+                return response.status(404).send({status: "Relationship not found"})
 
-        }catch(err) {
-            next(err)
-        }
-    },
+            return response.status(200).send()
 
-    async listMyEncontros(request, response, next) {
-        try {
-            const { page=1 } = request.query;
-            const { id } = request.params;
-
-            const eterapia = new Eterapia(id);
-            const result = await eterapia.checkMe();
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-
-            const encontros = await connectionDB('encontros')
-                .select('*')
-                .whereNot('status', 'deleted')
-                .whereNot('status', 'inactive')
-                .where('id_eterapia_fk', id)
-                .limit(5)
-                .offset((page - 1) * 5);;
-            return response.json(encontros);
         }catch(err) {
             next(err)
         }

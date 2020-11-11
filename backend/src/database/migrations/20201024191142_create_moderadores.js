@@ -1,13 +1,13 @@
 
 exports.up = function(knex) {
-  return knex.schema.createTable('moderadores', function(table) {
+  return knex.schema.createTable('moderador', function(table) {
       // user datas
       table.increments('id');
       table.text('userName').unique().notNullable();
       table.text('password').notNullable();
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
-      table.text('status').defaultTo('active'); // active / no active / deleted
+      // table.timestamp('deleted_at');
 
       // moderadores data
       table.string('fullName').notNullable();
@@ -20,5 +20,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('moderadores');
+  return knex.schema.dropTable('moderador');
 };

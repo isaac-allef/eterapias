@@ -1,58 +1,31 @@
 const connectionDB = require('../database/connection');
 const cryptHanddle = require('../handdles/cryptHanddle');
-const Moderador = require('../models/Moderador');
 const Participante = require('../models/Participante');
 
 module.exports = {
     async list(request, response, next) {
         try {
-            const { page=1 } = request.query;
-            const participantes = await connectionDB('participantes')
-            .select('*')
-            .whereNot('status', 'deleted')
-            .whereNot('status', 'inactive')
-            .limit(5)
-            .offset((page - 1) * 5);
-            
-            return response.json(participantes);
-        }catch(err) {
-            next(err)
-        }
-    },
-
-    async listMyInformations(request, response, next) {
-        try {
-            const { id } = request.params;
-
-            const participante = new Participante(id);
-            let result = await participante.getMyData();
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                myInformations: result.result
-            })
-        }catch(err) {
-            next(err)
-        }
-    },
-
-    async listMyEterapias(request, response, next) {
-        try {
-            const { id } = request.params;
-
-            const participante = new Participante(id);
-            const result = await participante.getMyEterapias();
-
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                myEterapias: result.result
-            })
+            const { page=1, 
+                limit=5, 
+                orderBy='fullName', 
+                ascDesc='asc',  
+                id,
+                eterapia_id,
+                get='*'
+            } = request.query;
+            const participanteList = await Participante.list(page, limit, orderBy, ascDesc, id, eterapia_id, get)
+            return response.json({
+                "metada": {
+                    page, 
+                    limit, 
+                    orderBy, 
+                    ascDesc, 
+                    id,
+                    eterapia_id,
+                    get
+                },
+                "result": participanteList
+            });
         }catch(err) {
             next(err)
         }
@@ -60,43 +33,6 @@ module.exports = {
 
     async create(request, response, next) {
         try {
-            const { 
-                fullName,
-                email,
-                whatsapp_tel,
-                city,
-                uf,
-                sex
-            } = request.body;
-        
-            const [ id ] = await connectionDB('participantes').insert({
-                fullName,
-                email,
-                whatsapp_tel,
-                city,
-                uf,
-                sex
-            }).returning('id');
-            return response.status(201).send({ 
-                id,
-                fullName 
-            });
-        }catch(err) {
-            // return response.status(500).send({ error: err.detail});
-            next(err)
-        }
-    },
-
-    async update(request, response, next) {
-        try {
-            const { id } = request.params;
-
-            const participante = new Participante(id);
-            const {check, error} = await participante.checkMe();
-
-            if (!check)
-                return response.status(500).send({error: error})
-            
             const {
                 fullName,
                 email,
@@ -106,43 +42,47 @@ module.exports = {
                 sex
             } = request.body;
 
-            await connectionDB('participantes').where('id', id).update({
-                fullName: fullName,
-                email: email,
-                whatsapp_tel: whatsapp_tel,
-                city: city,
-                uf: uf,
-                sex: sex,
-                updated_at: connectionDB.fn.now()
+            const id = await Participante.create({ 
+                fullName,
+                email,
+                whatsapp_tel,
+                city,
+                uf,
+                sex
             })
-
-            response.status(200).send({
-                id,
-                its: 'up to date'
-            });
+            return response.status(201).json({id: id});
         }catch(err) {
             next(err)
         }
     },
 
-    async setStatusActive(request, response, next) {
+    async update(request, response, next) {
         try {
             const { id } = request.params;
-            const { active } = request.body;
-            
-            const participante = new Participante(id);
-            const result = await participante.setStatusActive(active);
 
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                status: result.result
+            const { 
+                fullName,
+                email,
+                whatsapp_tel,
+                city,
+                uf,
+                sex
+            } = request.body;
+
+            const numberOfRawUpdated = await Participante.update(id, { 
+                fullName,
+                email,
+                whatsapp_tel,
+                city,
+                uf,
+                sex
             })
 
+            if(!numberOfRawUpdated)
+                return response.status(404).json({status: 'Participante not found'})
+
+            return response.status(200).json();
         }catch(err) {
-            // return response.status(500).send({ error: err.detail});
             next(err)
         }
     },
@@ -150,19 +90,15 @@ module.exports = {
     async delete(request, response, next) {
         try {
             const { id } = request.params;
-            const participante = new Participante(id);
-            const result = await participante.deleteMe();
 
-            if (!result.check)
-                return response.status(500).send({error: result.error})
-            
-            return response.status(200).send({
-                id: id,
-                status: result.result
-            })
+            const numberOfRawDeleted = await Participante.delete(id)
+
+            if(!numberOfRawDeleted)
+                return response.status(404).json({status: 'Participante not found'})
+
+            return response.status(200).json();
         }catch(err) {
-            // return response.status(500).send({ error: err.detail});
             next(err)
         }
-    }
+    },
 }

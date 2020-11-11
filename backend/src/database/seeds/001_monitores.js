@@ -2,11 +2,11 @@ const bcrypt = require('bcrypt');
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('moderadores').del()
+  return knex('moderador').del()
     .then(async function () {
       // Inserts seed entries
       // const password = await bcrypt.hash('123', 10);
-      return knex('moderadores').insert([
+      return knex('moderador').insert([
         {
           userName: 'isaac_allef', 
           password: await bcrypt.hash('123', 10),

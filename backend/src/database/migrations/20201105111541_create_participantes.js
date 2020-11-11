@@ -1,10 +1,10 @@
 
 exports.up = function(knex) {
-    return knex.schema.createTable('participantes', function(table) {
+    return knex.schema.createTable('participante', function(table) {
         table.increments('id');
         table.timestamp('created_at').defaultTo(knex.fn.now());
         table.timestamp('updated_at').defaultTo(knex.fn.now());
-        table.text('status').defaultTo('active'); // active / no active / deleted
+        // table.timestamp('deleted_at');
   
         table.string('fullName').notNullable();
         table.string('email').notNullable();
@@ -16,6 +16,6 @@ exports.up = function(knex) {
   };
   
   exports.down = function(knex) {
-    return knex.schema.dropTable('participantes');
+    return knex.schema.dropTable('participante');
   };
   

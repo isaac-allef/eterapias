@@ -1,20 +1,28 @@
 const connectionDB = require('../database/connection');
-const DiarioDeCampo = require('../models/DiarioDeCampo');
-const Encontro = require('../models/Encontro');
-const Participante = require('../models/Participante');
+const Presenca = require('../models/Presenca');
 
 module.exports = {
     async list(request, response, next) {
         try {
-            const { page=1 } = request.query;
-
-            const presencas = await connectionDB('presencas')
-                .select('*')
-                .whereNot('status', 'deleted')
-                .whereNot('status', 'inactive')
-                .limit(5)
-                .offset((page - 1) * 5);;
-            return response.json(presencas);
+            const { page=1, 
+                limit=5, 
+                orderBy='id', 
+                ascDesc='asc', 
+                participante_id,
+                encontro_id
+            } = request.query;
+            const presencaList = await Presenca.list(page, limit, orderBy, ascDesc, participante_id, encontro_id)
+            return response.json({
+                "metadata": {
+                    page, 
+                    limit, 
+                    orderBy, 
+                    ascDesc,
+                    participante_id,
+                    encontro_id
+                },
+                "result": presencaList
+            });
         }catch(err) {
             next(err)
         }
@@ -23,29 +31,15 @@ module.exports = {
     async create(request, response, next) {
         try {
             const {
-                id_participante_fk,
-                id_encontro_fk
+                participante_id,
+                encontro_id
             } = request.body;
 
-            const participante = new Participante(id_participante_fk);
-            const {check, error} = await participante.checkMe();
-
-            if (!check)
-                return response.status(500).send({error: error})
-            
-            const encontro = new Encontro(id_encontro_fk);
-            const {check:c, error:e} = await encontro.checkMe();
-
-            if (!c)
-                return response.status(500).send({error: e})
-        
-            const [ id ] = await connectionDB('presencas').insert({
-                id_participante_fk,
-                id_encontro_fk
-            }).returning('id');
-            return response.status(201).send({
-                id,
-            });
+            const id = await Presenca.create({
+                participante_id,
+                encontro_id
+            })
+            return response.status(201).json({id: id});
         }catch(err) {
             next(err)
         }
@@ -53,52 +47,17 @@ module.exports = {
 
     async delete(request, response, next) {
         try {
-            // const { id } = request.params;
-            // const id_encontro_fk = parseInt(id);
             const {
-                id_participante_fk,
-                id_encontro_fk
+                participante_id,
+                encontro_id
             } = request.body;
 
-            const participante = new Participante(id_participante_fk);
-            const {check, error} = await participante.checkMe();
+            const numberOfRawDeleted = Presenca.delete(participante_id, encontro_id);
+            
+            if(!numberOfRawDeleted)
+                return response.status(404).json({status: 'Presenca not found'})
 
-            if (!check)
-                return response.status(500).send({error: error})
-            
-            const encontro = new Encontro(id_encontro_fk);
-            const {check:c, error:e} = await encontro.checkMe();
-
-            if (!c)
-                return response.status(500).send({error: e})
-            
-            const result = await connectionDB('presencas')
-                .select('id')
-                .where('id_participante_fk', id_participante_fk)
-                .where('id_encontro_fk', id_encontro_fk)
-                .whereNot('status', 'deleted')
-            
-            if(Object.keys(result).length === 0) {
-                return response.status(200).send({
-                    id_participante_fk, 
-                    id_encontro_fk,
-                    error: 'Presenca not exists or has already been deleted'
-                })
-            }
-            
-            await connectionDB('presencas')
-                .update({
-                    status: 'deleted',
-                    updated_at: connectionDB.fn.now()
-                })
-                .where('id_participante_fk', id_participante_fk)
-                .where('id_encontro_fk', id_encontro_fk)
-            
-            return response.status(200).send({
-                id_participante_fk, 
-                id_encontro_fk,
-                result: 'Presenca deleted'
-            })
+            return response.status(200).json();
         }catch(err) {
             next(err)
         }

@@ -1,133 +1,84 @@
-const connectionDB = require('../database/connection');
-const cryptHanddle = require('../handdles/cryptHanddle');
-const DefaultEntity = require('./DefaultEntity');
-const Moderador = require('./Moderador');
-const objectHanddle = require('../handdles/objectHanddle');
-const Encontro = require('./Encontro');
+const connectionDB = require("../database/connection");
+const { mergeStringArray, stringToArray } = require("../handdles/stringHanddle");
+const Model = require("./Model")
 
-module.exports = class Eterapia extends DefaultEntity{
-    constructor(id) {
-        super(id, 'eterapias');
+class Eterapia extends Model {
+    constructor() {
+        super('eterapia');
     }
 
-    async getMyModeradores() {
-        return this.getMyRelationshipsWithNtoN({
-            otherTable: "moderadores", 
-            intermediateTable: "eterapias_moderadores", 
-            columnMyIdFk: "id_eterapia_fk", 
-            columnOtherIdFk: "id_moderador_fk", 
-            columnOtherStatus: "status_moderador",
-            showInactives: false
-        });
-    }
+    list( page=1, 
+        limit=5, 
+        orderBy='id', 
+        ascDesc='asc', 
+        id=null,
+        moderador_id=null,
+        participante_id=null,
+        get='*'
+        ) {
 
-    async getMyParticipantes() {
-        return this.getMyRelationshipsWithNtoN({
-            otherTable: "participantes", 
-            intermediateTable: "eterapias_participantes", 
-            columnMyIdFk: "id_eterapia_fk", 
-            columnOtherIdFk: "id_participante_fk", 
-            columnOtherStatus: "status_participante",
-            showInactives: false
-        });
-    }
+        get = stringToArray(get, ',');
 
-    async setStatusActive(active) {
+        const query = connectionDB(this.table);
 
-        this.setMyStatus(active);
-
-        // setando status nos encontros filhos
-        // e cada encontro filho seta status nos seus filhos
-        const idEncontros = await connectionDB('encontros')
-                .select('id')
-                .whereNot('status', 'deleted')
-                .where('id_eterapia_fk', this.myId)
-        idEncontros.forEach(async (id) => {
-            const encontro = new Encontro(id.id);
-            await encontro.setStatusActive(active)
-        })
-        //
-        
-        return this.setMyStatusActiveNtoN({
-            active: active,
-            intermediateTableArray: [
-                {
-                    tableName: 'eterapias_moderadores',
-                    columnMyIdFk: 'id_eterapia_fk',
-                    columnMyStatus: 'status_eterapia'
-                },
-                {
-                    tableName: 'eterapias_participantes',
-                    columnMyIdFk: 'id_eterapia_fk',
-                    columnMyStatus: 'status_eterapia'
-                },
-            ]
-        });
-    }
-
-    async deleteMe() {
-
-        this.deleteMeSimple();
-        
-        // setando deleted nos encontros filhos
-        // e cada encontro filho seta deleted nos seus filhos
-        const idEncontros = await connectionDB('encontros')
-                .select('id')
-                .where('id_eterapia_fk', this.myId)
-        idEncontros.forEach(async (id) => {
-            const encontro = new Encontro(id.id);
-            await encontro.deleteMe()
-        })
-
-        //
-        return this.deleteMeDeepNtoN({
-            intermediateTableArray: [
-                {
-                    tableName: 'eterapias_moderadores',
-                    columnMyIdFk: 'id_eterapia_fk',
-                    columnMyStatus: 'status_eterapia'
-                },
-            ]
-        });
-    }
-
-    async linking(config = {}) {
-
-        const {check, error} = await this.checkMe();
-        if (!check) return {check, error};
-
-        const { id_entity, table, intermediateTable, columnMyIdFk, columnOtherIdFk } = config;
-
-        const entity = new DefaultEntity(id_entity, table);
-        const checkError = await entity.checkMe();
-        const checkEntity = checkError.check;
-        const errorEntity = checkError.error;
-        if (!checkEntity) return {checkEntity, errorEntity};
-
-
-        let object = {
-            id_eterapia_fk: this.myId,
-            id_entity_fk: id_entity
+        if(id) {
+            return query
+                .select(get)
+                .where('id', id)
         }
 
-        object = objectHanddle.renameKey(object, 'id_eterapia_fk', columnMyIdFk);
-        object = objectHanddle.renameKey(object, 'id_entity_fk', columnOtherIdFk);
+        else if(moderador_id) {
+            query
+            .join('eterapia_moderador', 'eterapia_moderador.eterapia_id', '=', 'eterapia.id')
+            .join('moderador', 'moderador.id', '=', 'eterapia_moderador.moderador_id')
+            .where('moderador_id', moderador_id)
+            .select(mergeStringArray('eterapia.', get), 'moderador.fullName')
+        }
+
+        else if(participante_id) {
+            query
+            .join('eterapia_participante', 'eterapia_participante.eterapia_id', '=', 'eterapia.id')
+            .join('participante', 'participante.id', '=', 'eterapia_participante.participante_id')
+            .where('participante_id', participante_id)
+            .select(mergeStringArray('eterapia.', get), 'participante.fullName')
+        }
         
-        await connectionDB(intermediateTable).insert(object)
-        return { check: true, result: "Ok"};
+        else {
+            query.select(get);
+        }
+
+        return query.orderBy(orderBy, ascDesc)
+                    .limit(limit)
+                    .offset((page - 1) * limit);
     }
 
-    async unlinking(config = {}) {
-        const {check, error} = await this.checkMe();
-        if (!check) return {check, error};
+    async linkModerador(id_eterapia, id_moderador) {
+        return await connectionDB('eterapia_moderador').insert({
+            eterapia_id: id_eterapia,
+            moderador_id: id_moderador
+        })
+    }
 
-        const { id_entity, intermediateTable, columnMyIdFk, columnOtherIdFk } = config;
+    async unlinkModerador(id_eterapia, id_moderador) {
+        return await connectionDB('eterapia_moderador')
+            .where('eterapia_id', id_eterapia)
+            .andWhere('moderador_id', id_moderador)
+            .del();
+    }
 
-        await connectionDB(intermediateTable)
-                .where(columnMyIdFk, this.myId)
-                .andWhere(columnOtherIdFk, id_entity)
-                .del();
-        
-        return { check: true, result: "Ok"};
+    async linkParticipante(id_eterapia, id_participante) {
+        return await connectionDB('eterapia_participante').insert({
+            eterapia_id: id_eterapia,
+            participante_id: id_participante
+        })
+    }
+
+    async unlinkParticipante(id_eterapia, id_participante) {
+        return await connectionDB('eterapia_participante')
+            .where('eterapia_id', id_eterapia)
+            .andWhere('participante_id', id_participante)
+            .del();
     }
 }
+
+module.exports = new Eterapia();

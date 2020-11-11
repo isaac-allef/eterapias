@@ -1,18 +1,16 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('encontro').del()
+  return knex('eterapia_moderador').del()
     .then(async function () {
-      return knex('encontro').insert([
+      return knex('eterapia_moderador').insert([
         {
           eterapia_id: 1,
-          dateTime: "05/11/2020 16:25",
-          app: "google meet"
+          moderador_id: 1,
         },
         {
           eterapia_id: 2,
-          dateTime: "11/11/2020 13:56",
-          app: "whatsapp"
+          moderador_id: 2,
         },
       ]);
     });

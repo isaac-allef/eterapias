@@ -1,36 +1,51 @@
-const connectionDB = require('../database/connection');
-const cryptHanddle = require('../handdles/cryptHanddle');
-const DefaultEntity = require('./DefaultEntity');
+const connectionDB = require("../database/connection");
+const Model = require("./Model")
 
-module.exports = class Presenca extends DefaultEntity{
-    constructor(id) {
-        super(id, 'presencas');
+class Presenca extends Model {
+    constructor() {
+        super('presenca');
     }
 
-    async setStatusActive(active) {
-        if(active) {
-            const data = await this.mydata;
-            // console.log(data)
-            const participante = await connectionDB('participantes')
-                .select('*')
-                .where('id', data.id_participante_fk)
-                .first()
-            const encontro = await connectionDB('encontros')
-                .select('*')
-                .where('id', data.id_encontro_fk)
-                .first()
-                
-            if(participante.status === 'active' && encontro.status === 'active')
-                return this.setMyStatus(active);
-            else
-                return 0;
-        }else {
-            return this.setMyStatus(active);
-        }
+    list( page=1, 
+        limit=5, 
+        orderBy='id', 
+        ascDesc='asc',
+        participante_id=null,
+        encontro_id=null
+        ) {
         
+        const query = connectionDB(this.table);
+        
+        if(participante_id) {
+            query
+            .where('participante_id', participante_id)
+            .join('participante', 'participante.id', '=', 'presenca.participante_id')
+            .select('presenca.*', 'participante.fullName')
+        }
+        else if(encontro_id) {
+            query
+            .where('encontro_id', encontro_id)
+            .join('encontro', 'encontro.id', '=', 'presenca.encontro_id')
+            .select('presenca.*', 'encontro.dateTime')
+        }
+
+        return query.orderBy(orderBy, ascDesc)
+                    .limit(limit)
+                    .offset((page - 1) * limit);
     }
 
-    async deleteMe() {
-        return this.deleteMeSimple();
+    delete(participante_id, encontro_id) {
+        // return await connectionDB(this.table)
+        //     .where('participante_id', participante_id)
+        //     .where('encontro_id', encontro_id)
+        //     .update({
+        //         deleted_at: connectionDB.fn.now()
+        //     })
+        return connectionDB(this.table)
+            .where('participante_id', participante_id)
+            .where('encontro_id', encontro_id)
+            .del()
     }
 }
+
+module.exports = new Presenca();

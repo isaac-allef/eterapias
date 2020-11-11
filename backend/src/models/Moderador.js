@@ -1,105 +1,47 @@
-const connectionDB = require('../database/connection');
-const cryptHanddle = require('../handdles/cryptHanddle');
-const DefaultEntity = require('./DefaultEntity');
-const DiarioDeCampo = require('./DiarioDeCampo');
+const connectionDB = require("../database/connection");
+const { stringToArray, mergeStringArray } = require("../handdles/stringHanddle");
+const Model = require("./Model")
 
-module.exports = class Moderador extends DefaultEntity{
-    constructor(id) {
-        super(id, 'moderadores');
+class Moderador extends Model {
+    constructor() {
+        super('moderador');
     }
 
-    async getMyEterapias() {
-        return this.getMyRelationshipsWithNtoN({
-            otherTable: "eterapias", 
-            intermediateTable: "eterapias_moderadores", 
-            columnMyIdFk: "id_moderador_fk", 
-            columnOtherIdFk: "id_eterapia_fk", 
-            columnOtherStatus: "status_eterapia",
-            showInactives: false
-        });
-    }
+    list( page=1, 
+        limit=5, 
+        orderBy='id', 
+        ascDesc='asc', 
+        id=null,
+        eterapia_id=null,
+        get='*'
+        ) {
 
-    async setStatusActive(active) {
-        
-        await this.setMyStatus(active);
+        get = stringToArray(get, ',');
 
-        const diarios = await connectionDB('diarios_de_campo')
-                .select('id')
-                .whereNot('status', 'deleted')
-                .where('id_moderador_fk', this.myId)
-        diarios.forEach(async (id) => {
-            const presenca = new DiarioDeCampo(id.id);
-            await presenca.setStatusActive(active)
-        })
+        const query = connectionDB(this.table);
 
-        return this.setMyStatusActiveNtoN({
-            active: active,
-            intermediateTableArray: [
-                {
-                    tableName: 'eterapias_moderadores',
-                    columnMyIdFk: 'id_moderador_fk',
-                    columnMyStatus: 'status_moderador'
-                },
-            ]
-        });
+        if(id) {
+            return query
+                .select(get)
+                .where('id', id)
+        }
 
-        // const {check, error} = await this.checkMe({ activeCheck: false });
-        // if (!check) return {check, error};
-        // let flag
-        //     if (active === false)
-        //         flag = 'inactive'
-        //     else
-        //         flag = 'active'
-        // await connectionDB.transaction(async trans => {
-        //     try {
-        //         await connectionDB('moderadores').where('id', this.myId).update({status: flag})
-        //         await connectionDB('eterapias_moderadores')
-        //             .update({status_moderador: flag})
-        //             .where('id_moderador_fk', this.myId)
-        //     }catch(err) {
-        //         return {error: err}
-        //     }
-        // })
+        else if(eterapia_id) {
+            query
+            .join('eterapia_moderador', 'eterapia_moderador.moderador_id', '=', 'moderador.id')
+            .join('eterapia', 'eterapia.id', '=', 'eterapia_moderador.eterapia_id')
+            .where('eterapia_id', eterapia_id)
+            .select(mergeStringArray('moderador.', get), 'eterapia.title')
+        }
 
-        // return { check: true, result: flag};
-    }
+        else {
+            query.select(get);
+        }
 
-    async deleteMe() {
-        
-        await this.deleteMeSimple();
-
-        const diarios = await connectionDB('diarios_de_campo')
-                .select('id')
-                .whereNot('status', 'deleted')
-                .where('id_moderador_fk', this.myId)
-        diarios.forEach(async (id) => {
-            const presenca = new DiarioDeCampo(id.id);
-            await presenca.deleteMe()
-        })
-
-        return this.deleteMeDeepNtoN({
-            intermediateTableArray: [
-                {
-                    tableName: 'eterapias_moderadores',
-                    columnMyIdFk: 'id_moderador_fk',
-                    columnMyStatus: 'status_moderador'
-                },
-            ]
-        });
-
-        // const {check, error} = await this.checkMe();
-        // if (!check) return {check, error};
-        // await connectionDB.transaction(async trans => {
-        //     try {
-        //         await connectionDB('moderadores').where('id', this.myId).update({status: 'deleted'})
-        //         await connectionDB('eterapias_moderadores')
-        //             .update({status_moderador: 'deleted'})
-        //             .where('id_moderador_fk', this.myId)
-        //     }catch(err) {
-        //         return { error: err }
-        //     }
-        // })
-
-        // return { check: true, result: 'deleted'};
+        return query.orderBy(orderBy, ascDesc)
+                    .limit(limit)
+                    .offset((page - 1) * limit);
     }
 }
+
+module.exports = new Moderador();

@@ -1,20 +1,22 @@
 
 exports.up = function(knex) {
-    return knex.schema.createTable('eterapias_participantes', function(table) {
+    return knex.schema.createTable('eterapia_participante', function(table) {
         table.increments('id');
-        table.integer('id_eterapia_fk')
-            .references('eterapias.id')
+        table.integer('eterapia_id')
+            .references('eterapia.id')
+            .onDelete('CASCADE')
             .notNullable();
-        table.integer('id_participante_fk')
-            .references('participantes.id')
+        table.integer('participante_id')
+            .references('participante.id')
+            .onDelete('CASCADE')
             .notNullable();
-        table.text('status_eterapia').defaultTo('active'); // active / no active / deleted
-        table.text('status_participante').defaultTo('active'); // active / no active / deleted
-        table.unique(['id_eterapia_fk', 'id_participante_fk'])
+          
+        table.unique(['eterapia_id', 'participante_id'])
+            
     })
   };
   
   exports.down = function(knex) {
-    return knex.schema.dropTable('eterapias_participantes');
+    return knex.schema.dropTable('eterapia_participante');
   };
   

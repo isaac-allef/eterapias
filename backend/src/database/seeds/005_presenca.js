@@ -1,12 +1,16 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('presencas').del()
+  return knex('presenca').del()
     .then(async function () {
-      return knex('presencas').insert([
+      return knex('presenca').insert([
         {
-          id_participante_fk: 1,
-          id_encontro_fk: 1
+          participante_id: 1,
+          encontro_id: 1
+        },
+        {
+          participante_id: 2,
+          encontro_id: 2
         },
       ]);
     });

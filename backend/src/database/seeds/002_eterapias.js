@@ -1,10 +1,10 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('eterapias').del()
+  return knex('eterapia').del()
     .then(function () {
       // Inserts seed entries
-      return knex('eterapias').insert([
+      return knex('eterapia').insert([
         {
           title: "Bate papo literário"
         },

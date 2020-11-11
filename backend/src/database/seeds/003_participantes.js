@@ -1,9 +1,9 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('participantes').del()
+  return knex('participante').del()
     .then(async function () {
-      return knex('participantes').insert([
+      return knex('participante').insert([
         {
           fullName: 'Lavinia Santos Trindade', 
           email: 'lavinia@gmail.com', 
