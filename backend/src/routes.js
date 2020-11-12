@@ -10,6 +10,7 @@ const participanteController = require('./controllers/participanteController');
 const encontroController = require('./controllers/encontroController');
 const diariosDeCampoController = require('./controllers/diariosDeCampoController');
 const presencaController = require('./controllers/presencaController');
+const formularioController = require('./controllers/formularioController');
 
 const routes = express.Router();
 
@@ -70,6 +71,16 @@ routes.get('/diarios', diariosDeCampoController.list);
 routes.post('/diario', diariosDeCampoController.create);
 routes.put('/diario/:id', diariosDeCampoController.update);
 routes.delete('/diario/:id', diariosDeCampoController.delete);
+//
+
+//
+routes.get('/formularios', formularioController.list);
+routes.post('/formulario', formularioController.create);
+routes.put('/formulario/:id', formularioController.update);
+routes.delete('/formulario/:id', formularioController.delete);
+
+routes.put('/formulario/:formulario_id/participante/:participante_id', formularioController.linkParticipante);
+routes.delete('/formulario/:formulario_id/participante/:participante_id', formularioController.unlinkParticipante);
 //
 
 module.exports = routes;
