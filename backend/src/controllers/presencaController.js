@@ -30,15 +30,13 @@ module.exports = {
 
     async create(request, response, next) {
         try {
-            const {
-                participante_id,
-                encontro_id
-            } = request.body;
+            // const {
+            //     participante_id,
+            //     encontro_id
+            // } = request.body;
+            const presencaArray = request.body;
 
-            const id = await Presenca.create({
-                participante_id,
-                encontro_id
-            })
+            const id = await Presenca.create(presencaArray)
             return response.status(201).json({id: id});
         }catch(err) {
             next(err)
@@ -52,7 +50,7 @@ module.exports = {
                 encontro_id
             } = request.body;
 
-            const numberOfRawDeleted = Presenca.delete(participante_id, encontro_id);
+            const numberOfRawDeleted = await Presenca.delete(participante_id, encontro_id);
             
             if(!numberOfRawDeleted)
                 return response.status(404).json({status: 'Presenca not found'})

@@ -43,7 +43,7 @@ class Presenca extends Model {
         //     })
         return connectionDB(this.table)
             .where('participante_id', participante_id)
-            .where('encontro_id', encontro_id)
+            .andWhere('encontro_id', encontro_id)
             .del()
     }
 }
