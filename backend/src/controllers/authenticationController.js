@@ -8,11 +8,11 @@ module.exports = {
     async authenticationModeradores (request, response) {
         const { userName, password } = request.body;
     
-        const user = await connectionDB('moderadores')
+        const user = await connectionDB('moderador')
             .select('*')
             .where('userName', userName)
-            .whereNot('status', 'deleted')
-            .whereNot('status', 'inactive')
+            // .whereNot('status', 'deleted')
+            // .whereNot('status', 'inactive')
             .first();
     
         if(!user) {

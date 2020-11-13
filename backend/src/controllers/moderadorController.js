@@ -142,4 +142,29 @@ module.exports = {
             next(err)
         }
     },
+
+    // Só moderador pode
+    async readMe(request, response, next) {
+        try{
+            const { 
+                page=1, 
+                limit=5, 
+                orderBy='fullName', 
+                ascDesc='asc', 
+                get='*'
+            } = request.query;
+            const id = request.userId;
+            
+            const me = await Moderador.list(page, limit, orderBy, ascDesc, id, null, get)
+            return response.json({
+                "metadata": {
+                    id,
+                    get
+                },
+                "result": me
+            });
+        }catch(err) {
+            next(err)
+        }
+    }
 }

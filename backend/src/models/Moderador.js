@@ -15,7 +15,7 @@ class Moderador extends Model {
         eterapia_id=null,
         get='*'
         ) {
-
+            
         get = stringToArray(get, ',');
 
         const query = connectionDB(this.table);

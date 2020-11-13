@@ -16,7 +16,7 @@ const routes = express.Router();
 
 routes.post('/authenticate', authenticationController.authenticationModeradores);
 
-// routes.use(authMiddleware)
+routes.use(authMiddleware)
 // qualquer rota colocada depois dessa linha:
 //      precisará ter um token de acesso
 //      dada pela rota authorization
@@ -24,6 +24,11 @@ routes.post('/authenticate', authenticationController.authenticationModeradores)
 
 // google api
 routes.post('/loadDataSheet', sheet.loadDataSheet);
+
+// User moderador
+routes.get('/usermoderador', moderadorController.readMe);
+routes.get('/usermoderador/eterapias', eterapiaController.myEterapias);
+//
 
 // 
 routes.get('/moderadores', moderadorController.list);

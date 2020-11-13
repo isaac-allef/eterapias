@@ -153,4 +153,31 @@ module.exports = {
             next(err)
         }
     },
+
+    // Só moderador pode
+    async myEterapias(request, response, next) {
+        try {
+            const { page=1, 
+                limit=5, 
+                orderBy='title', 
+                ascDesc='asc',
+                get='*'
+            } = request.query;
+            const id = request.userId;
+            const myEterapiaList = await Eterapia.list(page, limit, orderBy, ascDesc, null, id, null, get)
+            return response.json({
+                "metadata": {
+                    page, 
+                    limit, 
+                    orderBy, 
+                    ascDesc, 
+                    get,
+                    myid: id
+                },
+                "result": myEterapiaList
+            });
+        }catch(err) {
+            next(err)
+        }
+    },
 }
