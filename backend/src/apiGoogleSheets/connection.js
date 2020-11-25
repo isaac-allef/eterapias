@@ -16,7 +16,7 @@ module.exports = {
         return doc;
     },
 
-    async loadDatas(link_id) {
+    async loadDatas_deprecated(link_id) {
         const doc = await this.conectionWithSheet(link_id);
         let sheets = doc.sheetsByIndex;
         
@@ -43,6 +43,51 @@ module.exports = {
         };
 
         const docJson = {"titleDocument": titleDocument, "sheets": page};
+        // console.log(docJson)
+        return docJson;
+    },
+    
+    async loadDatas(link_id) {
+        const doc = await this.conectionWithSheet(link_id);
+        let sheets = doc.sheetsByIndex;
+        
+        const titleDocument = doc.title;
+        
+        let pages = [];
+        for(const sheet of sheets) {
+            const titleSheet = sheet.title;
+            // console.log(titleSheet)
+            let grid = [];
+    
+            await sheet.loadHeaderRow();
+            const columns = (sheet.headerValues);
+            let gridColumns = [{ readOnly: true, value: "" }];
+            for(const c of columns) {
+            	gridColumns.push({ value: c, readOnly: true });
+            }
+            // console.log(columns)
+            grid.push(gridColumns);
+            
+            const data = await sheet.getRows();
+            const rows = data.map(row => {
+                 return (row._rawData);
+            })
+            console.log(rows)
+            for(const row of rows) {
+            	let gridRow = [{ readOnly: true, value: rows.indexOf(row) + 1 }];
+            	for(const r of row) {
+            		gridRow.push({ value: r });
+            	}
+            	grid.push(gridRow);
+            }
+            
+            pages.push({
+                "titleSheet": titleSheet,
+                "grid": grid
+            });
+        };
+
+        const docJson = {"titleDocument": titleDocument, "sheets": pages};
         // console.log(docJson)
         return docJson;
     }

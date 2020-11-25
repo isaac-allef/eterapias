@@ -41,6 +41,11 @@ class Presenca extends Model {
         //     .update({
         //         deleted_at: connectionDB.fn.now()
         //     })
+        if(!participante_id) {
+        	return connectionDB(this.table)
+        		.where('encontro_id', encontro_id)
+        		.del()
+        }
         return connectionDB(this.table)
             .where('participante_id', participante_id)
             .andWhere('encontro_id', encontro_id)
