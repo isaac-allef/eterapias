@@ -3,9 +3,9 @@ import ReactDataSheet from 'react-datasheet';
 // import 'componets/list/node_modules/react-datasheet/lib/react-datasheet.css';
 import './styles.css'
 
-import api from '../../services/api';
+import Loading from '../loading'
 
-import ProgressBar from '../progressBar'
+import api from '../../services/api';
 
 export default function Sheet({ auth, link }) {
 
@@ -13,19 +13,6 @@ export default function Sheet({ auth, link }) {
     const [num, setNum] = useState(0);
     const [tap, setTap] = useState([]);
     const [sheets, setSheets] = useState([]);
-
-    const [completed, setCompleted] = useState(0);
-    const [progressBar, setProgressBar] = useState(0);
-
-    useEffect(() => {
-        if(!sheets.length){
-            setProgressBar(setInterval(() => setCompleted(Math.floor(Math.random() * 100) + 1), 2000));
-        }
-        else{
-            clearInterval(progressBar)
-            setProgressBar(0)
-        }
-    }, [sheets]);
 
     const getSheets = async () => {
         const response = await api.post('loadDataSheet', {
@@ -59,15 +46,15 @@ export default function Sheet({ auth, link }) {
 
     useEffect(() => {
         createListWithTap();
-    }, [sheets]);
+    }, [sheets, num]);
 
     return (
         <div className="list-container">
+            <Loading />
             <div className="tap-container">
                 {tap}
             </div>
-            {list}
-            <ProgressBar bgcolor={"#6a1b9a"} completed={completed} />
+            {sheets.length ? list : <p>loading</p>}
         </div>
     );
 }
