@@ -50,11 +50,10 @@ export default function Sheet({ auth, link }) {
 
     return (
         <div className="list-container">
-            <Loading />
             <div className="tap-container">
                 {tap}
             </div>
-            {sheets.length ? list : <p>loading</p>}
+            {sheets.length ? list : <Loading />}
         </div>
     );
 }

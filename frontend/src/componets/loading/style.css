@@ -1,14 +1,14 @@
-/* .App {
+.loading-container {
     text-align: center;
   }
-   */
+  
   .loading-image {
-    height: 40vmin;
+    height: 15vmin;
     pointer-events: none;
   }
   
   @media (prefers-reduced-motion: no-preference) {
-    .loading-image {
+    .loading-image-static {
       animation: loading-image-spin infinite 20s linear;
     }
   }
@@ -18,7 +18,7 @@
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(2000deg);
+      transform: rotate(8000deg);
     }
   }
   

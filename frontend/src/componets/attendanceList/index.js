@@ -47,17 +47,14 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
 
         let list = [
             [
+                { readOnly: true, value: '' },
                 { readOnly: true, value: 'id' },
                 { readOnly: true, value: 'fullName' },
                 { readOnly: true, value: 'email' },
-                { readOnly: true, value: '' },
             ]
         ];
         for(const participante of participantes) {
             list.push([
-                { readOnly: true, value: participante.id },
-                { value: participante.fullName },
-                { value: participante.email },
                 {   
                     value: 'check',
                     component: (
@@ -78,7 +75,10 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
                             </span>
                     ),
                     forceComponent: true
-                }
+                },
+                { readOnly: true, value: participante.id },
+                { value: participante.fullName },
+                { value: participante.email },
             ])
         }
         setList(
@@ -153,6 +153,6 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
         <div className="list-container">
             {list}
             <button onClick={pushAttendanceList}>Submit</button>
-      </div>
+        </div>
     );
 }
