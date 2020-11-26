@@ -5,13 +5,29 @@ import './styles.css'
 
 import api from '../../services/api';
 
+import ProgressBar from '../progressBar'
+
 export default function Sheet({ auth, link }) {
+
     const [list, setList] = useState([]);
     const [num, setNum] = useState(0);
     const [tap, setTap] = useState([]);
-    const [sheet, setSheet] = useState([]);
+    const [sheets, setSheets] = useState([]);
 
-    const getData = async () => {
+    const [completed, setCompleted] = useState(0);
+    const [progressBar, setProgressBar] = useState(0);
+
+    useEffect(() => {
+        if(!sheets.length){
+            setProgressBar(setInterval(() => setCompleted(Math.floor(Math.random() * 100) + 1), 2000));
+        }
+        else{
+            clearInterval(progressBar)
+            setProgressBar(0)
+        }
+    }, [sheets]);
+
+    const getSheets = async () => {
         const response = await api.post('loadDataSheet', {
             link_id: link
         }, {
@@ -19,36 +35,31 @@ export default function Sheet({ auth, link }) {
                 Authorization: auth
             }
         });
-        const sheets = response.data.sheets;
-        setSheet(sheets)
-        setList(
-            <ReactDataSheet key={'resolver: a key tem que ser única'}
-                data={sheets[num].grid}
-                valueRenderer={cell => cell.value}
-            />
-        )
-        setTap(sheets.map((sheet, index) => (
-                <button onClick={() => setNum(index)}>{sheet.titleSheet}</button>
-            ))
-        )
+        setSheets(response.data.sheets)
     }
 
-    useEffect(() => {
-        getData();
-    }, []);
-
-    useEffect(() => {
-        try{
+    const createListWithTap = () => {
+        if(sheets.length) {
             setList(
                 <ReactDataSheet key={'resolver: a key tem que ser única'}
-                    data={sheet[num].grid}
+                    data={sheets[num].grid}
                     valueRenderer={cell => cell.value}
                 />
             )
-        }catch(err) {
-            console.log(err)
+            setTap(sheets.map((sheet, index) => (
+                    <button onClick={() => setNum(index)}>{sheet.titleSheet}</button>
+                ))
+            )
         }
-    }, [num]);
+    }
+
+    useEffect(() => {
+        getSheets();
+    }, []);
+
+    useEffect(() => {
+        createListWithTap();
+    }, [sheets]);
 
     return (
         <div className="list-container">
@@ -56,6 +67,7 @@ export default function Sheet({ auth, link }) {
                 {tap}
             </div>
             {list}
+            <ProgressBar bgcolor={"#6a1b9a"} completed={completed} />
         </div>
     );
 }

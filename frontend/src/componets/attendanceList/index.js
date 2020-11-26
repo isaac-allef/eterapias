@@ -50,6 +50,7 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
                 { readOnly: true, value: 'id' },
                 { readOnly: true, value: 'fullName' },
                 { readOnly: true, value: 'email' },
+                { readOnly: true, value: '' },
             ]
         ];
         for(const participante of participantes) {
@@ -58,8 +59,9 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
                 { value: participante.fullName },
                 { value: participante.email },
                 {   
-                    value: 'Delete',
+                    value: 'check',
                     component: (
+                        <span className="value-viewer">
                         <input
                             name="attendance"
                             type="checkbox"
@@ -73,6 +75,7 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
                                 else
                                     removeAttendance(participante.id, encontro_id)
                             }} />
+                            </span>
                     ),
                     forceComponent: true
                 }

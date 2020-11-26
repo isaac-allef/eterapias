@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import ReactDataSheet from 'react-datasheet';
 // import 'componets/list/node_modules/react-datasheet/lib/react-datasheet.css';
-import './styles.css'
 
 import api from '../../services/api';
 
