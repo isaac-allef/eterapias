@@ -4,8 +4,8 @@ exports.up = function(knex) {
         table.increments('id');
         table.text('title').notNullable();
         table.text('description');
-        table.text('target_audience');
-        table.text('frequency');
+        table.text('dayOfWeek');
+        table.text('clock');
         table.text('app');
         table.timestamp('created_at').defaultTo(knex.fn.now());
         table.timestamp('updated_at').defaultTo(knex.fn.now());

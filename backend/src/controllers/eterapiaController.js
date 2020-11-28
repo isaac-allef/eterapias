@@ -38,14 +38,16 @@ module.exports = {
             const {
                 title,
                 description,
-                frequency,
+                dayOfWeek,
+                clock,
                 app
             } = request.body;
 
             const id = await Eterapia.create({
                 title,
                 description,
-                frequency,
+                dayOfWeek,
+                clock,
                 app
             })
             return response.status(201).json({id: id});
@@ -61,14 +63,16 @@ module.exports = {
             const {
                 title,
                 description,
-                frequency,
+                dayOfWeek,
+                clock,
                 app
             } = request.body;
 
             const numberOfRawUpdated = await Eterapia.update(id, {
                 title,
                 description,
-                frequency,
+                dayOfWeek,
+                clock,
                 app
             })
 
