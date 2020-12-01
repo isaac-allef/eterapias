@@ -65,7 +65,7 @@ const Profile: React.FC = () => {
                 <span className="line" />
             </Tab>
             <Main>
-                <LeftSide />
+                <LeftSide id="1" auth={auth} />
                 <RightSide>
                     <Tab className="mobile">
                         <TabContent />
