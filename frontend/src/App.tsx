@@ -15,10 +15,10 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path='/' element={<Profile />}/>
+        <Route path='/' element={<Login />}/>
+        <Route path='/profile' element={<Profile />}/>
         <Route path='/project' element={<Project />}/>
         <Route path='/frequency' element={<Frequency />}/>
-        <Route path='/login' element={<Login />}/>
         <Route path='/associate' element={<AssociateQU />}/>
       </Routes>
       {/* <Footer /> */}

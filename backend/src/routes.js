@@ -16,7 +16,7 @@ const routes = express.Router();
 
 routes.post('/authenticate', authenticationController.authenticationModeradores);
 
-routes.use(authMiddleware)
+// routes.use(authMiddleware)
 // qualquer rota colocada depois dessa linha:
 //      precisará ter um token de acesso
 //      dada pela rota authorization

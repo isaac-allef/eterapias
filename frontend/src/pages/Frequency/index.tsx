@@ -7,6 +7,19 @@ import Register from '../../components/Register';
 import AttendanceList from '../../components/attendanceList';
 
 const Frequency: React.FC = () => {
+    interface dataNavigate {
+        eterapia_id: string,
+        encontro_id: string,
+        auth: string
+    }
+    const dataNavigate:dataNavigate = {
+        eterapia_id: localStorage.getItem('eterapia_id') as string,
+        encontro_id: localStorage.getItem('encontro_id') as string,
+        auth: localStorage.getItem('auth') as string,
+    }
+
+    const { eterapia_id, encontro_id, auth } = dataNavigate;
+
     const TabContent = () => (
         <div className="content">
             <RepoIcon />
@@ -37,9 +50,9 @@ const Frequency: React.FC = () => {
                     frequency={4}
                     />
                     <AttendanceList 
-                        auth = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjA2NDEzODI4LCJleHAiOjE2MDY1MDAyMjh9.Dj0H2cnpDWbt9Ua2yJOl88XgOmaLKhkQwpquh9PD-Ak'
-                        eterapia_id = {1}
-                        encontro_id = {1}
+                        auth = {auth}
+                        eterapia_id = {eterapia_id}
+                        encontro_id = {encontro_id}
                     />
                 </RightSide>
             </Main>

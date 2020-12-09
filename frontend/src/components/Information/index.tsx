@@ -1,18 +1,30 @@
+import { Button } from '@material-ui/core';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Container, Row, ScheduleIcon, ClockIcon, PeopleIcon} from './style';
 
+interface dataNavigate {
+    id: string,
+    eterapia_id: string,
+    auth: string
+}
+
 interface Props {
+    dataNavigate: dataNavigate,
     date: string,
     time: string,
     people: number,
 }
 
 const Information: React.FC<Props> = ({
+    dataNavigate,
     date,
     time,
     people
 }) => {
+
+    const navigate = useNavigate();
     return (
         <Container>
             <h2>Informações</h2>
@@ -29,8 +41,15 @@ const Information: React.FC<Props> = ({
                     <PeopleIcon />
                     <p>{people}</p>
                 </li>
-                <button className='informationButtons'>Relatórios</button>
-                <button className='informationButtons'>Lista de Presença</button>
+                {/* <Button className='informationButtons'
+                    onClick={ () => {
+                        localStorage.setItem('id', dataNavigate.id)
+                        localStorage.setItem('eterapia_id', dataNavigate.eterapia_id)
+                        localStorage.setItem('auth', dataNavigate.auth)
+                        navigate('/frequency')
+                    }
+                }
+                >Lista de Presença</Button> */}
             </Row>
         </Container>
     );

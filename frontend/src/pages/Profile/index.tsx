@@ -7,7 +7,18 @@ import LeftSide from '../../components/LeftSide';
 import api from '../../services/api';
 
 const Profile: React.FC = () => {
-    const auth = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjA2ODQxNzU0LCJleHAiOjE2MDY5MjgxNTR9.oLsk6NyzF9g9RfPCmGaX8F3Qzwr7xbrrhjiqNjzcWec'
+    interface dataNavigate {
+        id: string,
+        auth: string
+    }
+    const dataNavigate:dataNavigate = {
+        id: localStorage.getItem('id') as string,
+        auth: localStorage.getItem('auth') as string,
+    }
+
+    const { id, auth } = dataNavigate;
+    const moderador_id = id;
+
     const [eterapias, setEterapias] = useState([]);
     const [eterapiasPlus, setEterapiasPlus] = useState([])
 
@@ -38,7 +49,7 @@ const Profile: React.FC = () => {
     }
 
     useEffect(() => {
-        getEterapias('1')
+        getEterapias(moderador_id)
     }, []);
 
     useEffect(() => {
@@ -65,7 +76,7 @@ const Profile: React.FC = () => {
                 <span className="line" />
             </Tab>
             <Main>
-                <LeftSide id="1" auth={auth} />
+                <LeftSide id={moderador_id} auth={auth} />
                 <RightSide>
                     <Tab className="mobile">
                         <TabContent />
@@ -75,7 +86,11 @@ const Profile: React.FC = () => {
                             {eterapiasPlus.map(eterapia => (
                                 <RepoCard
                                     key={eterapia['id']}
-                                    username={'Maria Luíza'}
+                                    dataNavigate={{
+                                        id: dataNavigate.id,
+                                        eterapia_id: eterapia['id'],
+                                        auth: dataNavigate.auth
+                                    }}
                                     reponame={eterapia['title']}
                                     description={eterapia['description']}
                                     dayOfWeek={eterapia['dayOfWeek']}

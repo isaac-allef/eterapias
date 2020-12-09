@@ -1,10 +1,17 @@
+import { Button } from '@material-ui/core';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Container, TopSide, ScheduleIcon, BotSide, ClockIcon, PeopleIcon } from './styles';
 
+interface dataNavigate {
+    id: string,
+    eterapia_id: string,
+    auth: string
+}
+
 interface Props {
-    username: string;
+    dataNavigate: dataNavigate;
     reponame: string;
     description?: string;
     dayOfWeek?: string;
@@ -13,7 +20,7 @@ interface Props {
 }
 
 const RepoCard: React.FC<Props> = ({
-    username,
+    dataNavigate,
     reponame,
     description,
     dayOfWeek,
@@ -22,13 +29,20 @@ const RepoCard: React.FC<Props> = ({
 }) => {
 
     const dayOfWeekClass = dayOfWeek ? dayOfWeek.toLowerCase() : 'other';
+    const navigate = useNavigate()
 
     return (
         <Container>
             <TopSide>
                 <header>
                     <ScheduleIcon />
-                    <Link to={`/${username}/${reponame}`}> {reponame} </Link>
+                    <Button onClick={ () => {
+                            localStorage.setItem('id', dataNavigate.id)
+                            localStorage.setItem('eterapia_id', dataNavigate.eterapia_id)
+                            localStorage.setItem('auth', dataNavigate.auth)
+                            navigate('/project')
+                        }
+                    }> {reponame} </Button>
                 </header>
                 <p>{description}</p>
             </TopSide>
