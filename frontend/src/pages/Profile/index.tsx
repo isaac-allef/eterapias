@@ -7,16 +7,28 @@ import LeftSide from '../../components/LeftSide';
 import api from '../../services/api';
 
 const Profile: React.FC = () => {
+    interface perfilUser {
+        id: string,
+        userName: string
+        fullName: string,
+        email: string,
+        whatsapp_tel: string,
+        city: string,
+        uf: string,
+        college: string,
+    }
     interface dataNavigate {
         id: string,
-        auth: string
+        auth: string,
+        perfilUser: perfilUser,
     }
     const dataNavigate:dataNavigate = {
         id: localStorage.getItem('id') as string,
         auth: localStorage.getItem('auth') as string,
+        perfilUser: JSON.parse(localStorage.getItem('perfilUser') as string),
     }
 
-    const { id, auth } = dataNavigate;
+    const { id, auth, perfilUser } = dataNavigate;
     const moderador_id = id;
 
     const [eterapias, setEterapias] = useState([]);
@@ -76,7 +88,7 @@ const Profile: React.FC = () => {
                 <span className="line" />
             </Tab>
             <Main>
-                <LeftSide id={moderador_id} auth={auth} />
+                <LeftSide perfilUser={perfilUser} />
                 <RightSide>
                     <Tab className="mobile">
                         <TabContent />
@@ -87,9 +99,7 @@ const Profile: React.FC = () => {
                                 <RepoCard
                                     key={eterapia['id']}
                                     dataNavigate={{
-                                        id: dataNavigate.id,
                                         eterapia_id: eterapia['id'],
-                                        auth: dataNavigate.auth
                                     }}
                                     reponame={eterapia['title']}
                                     description={eterapia['description']}

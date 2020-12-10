@@ -4,21 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { Container, Row, ScheduleIcon, ClockIcon, PeopleIcon} from './style';
 
-interface dataNavigate {
-    id: string,
-    eterapia_id: string,
-    auth: string
-}
-
 interface Props {
-    dataNavigate: dataNavigate,
     date: string,
     time: string,
     people: number,
 }
 
 const Information: React.FC<Props> = ({
-    dataNavigate,
     date,
     time,
     people

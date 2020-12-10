@@ -5,9 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Container, TopSide, ScheduleIcon, BotSide, ClockIcon, PeopleIcon } from './styles';
 
 interface dataNavigate {
-    id: string,
     eterapia_id: string,
-    auth: string
 }
 
 interface Props {
@@ -37,9 +35,7 @@ const RepoCard: React.FC<Props> = ({
                 <header>
                     <ScheduleIcon />
                     <Button onClick={ () => {
-                            localStorage.setItem('id', dataNavigate.id)
                             localStorage.setItem('eterapia_id', dataNavigate.eterapia_id)
-                            localStorage.setItem('auth', dataNavigate.auth)
                             navigate('/project')
                         }
                     }> {reponame} </Button>

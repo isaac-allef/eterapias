@@ -44,7 +44,7 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
     }
 
     const createList = async () => {
-
+        
         let list = [
             [
                 { readOnly: true, value: '' },
@@ -90,24 +90,31 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
     }
 
     useEffect(() => {
-        getAttendanceList();
         getParticipantes();
     }, []);
+    
+    useEffect(() => {
+        getAttendanceList();
+    }, [participantes]);
 
     useEffect(() => {
         createList();
-    }, [participantes, attendanceList]);
+    }, [attendanceList]);
 
 
     async function deleteAttendanceList() {
-        await api.delete('presenca', { 
-            data: { encontro_id },
-            headers: {
-                Authorization: auth
-            }
-        }).catch((err) => {
-            console.log(err)
-        })
+        const response = await api.get(`presencas?encontro_id=${encontro_id}`)
+        if (response.data.result.length) {
+            await api.delete('presenca', { 
+                data: { encontro_id },
+                headers: {
+                    Authorization: auth
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+
+        }
     }
 
     async function pushAttendanceList() {

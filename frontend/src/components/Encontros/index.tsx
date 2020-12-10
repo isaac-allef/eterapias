@@ -6,13 +6,14 @@ import { Container, Row } from './style';
 
 interface dataNavigate {
     eterapia_id: string,
-    auth: string
+    eterapia_title: string,
+    auth: string,
 }
 
 interface Encontro {
     id: string,
     dateTime: string,
-    app: string
+    app: string,
 }
 
 interface Props {
@@ -36,7 +37,8 @@ const Encontros: React.FC<Props> = ({
                                     onClick={ () => {
                                         localStorage.setItem('eterapia_id', dataNavigate.eterapia_id)
                                         localStorage.setItem('encontro_id', encontro.id)
-                                        localStorage.setItem('auth', dataNavigate.auth)
+                                        localStorage.setItem('eterapia_title', dataNavigate.eterapia_title)
+                                        localStorage.setItem('encontro_dataTime', encontro.dateTime)
                                         navigate('/frequency')
                                     }
                                 }

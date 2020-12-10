@@ -17,12 +17,12 @@ const Frequency: React.FC = () => {
             const response = await api.post('authenticate', { userName, password})
             localStorage.setItem('id', response.data.user.id)
             localStorage.setItem('auth', 'Bearer '+response.data.token)
-            localStorage.setItem('perfilUser', response.data.user); {/** fazer com que esses dados sejam utilizados no componente LeftSide, pq esse componente está pegando essas informações do servidor toda vez que é chamada */}
+            localStorage.setItem('perfilUser', JSON.stringify(response.data.user)); {/** fazer com que esses dados sejam utilizados no componente LeftSide, pq esse componente está pegando essas informações do servidor toda vez que é chamada */}
             navigate('/profile')
-            // console.log(response.data.user)
-            // console.log(response.data.token)
         }catch(err) {
             alert("Usuário não autorizado!")
+            setUserName('')
+            setPassword('')
         }
     }
 

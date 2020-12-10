@@ -10,19 +10,30 @@ import api from '../../services/api';
 import Encontros from '../../components/Encontros';
 
 const Profile: React.FC = () => {
-    interface dataNavigate {
+
+    interface perfilUser {
         id: string,
-        eterapia_id: string,
-        auth: string
-    }
-    const dataNavigate:dataNavigate = {
-        id: localStorage.getItem('id') as string,
-        eterapia_id: localStorage.getItem('eterapia_id') as string,
-        auth: localStorage.getItem('auth') as string,
+        userName: string
+        fullName: string,
+        email: string,
+        whatsapp_tel: string,
+        city: string,
+        uf: string,
+        college: string,
     }
 
-    const { id, eterapia_id, auth } = dataNavigate;
-    const moderador_id = id;
+    interface dataNavigate {
+        eterapia_id: string,
+        auth: string,
+        perfilUser: perfilUser,
+    }
+    const dataNavigate:dataNavigate = {
+        eterapia_id: localStorage.getItem('eterapia_id') as string,
+        auth: localStorage.getItem('auth') as string,
+        perfilUser: JSON.parse(localStorage.getItem('perfilUser') as string),
+    }
+
+    const { eterapia_id, auth, perfilUser } = dataNavigate;
 
     const [eterapia, setEterapia] = useState([]);
     const [eterapiaPlus, setEterapiaPlus] = useState([])
@@ -100,21 +111,21 @@ const Profile: React.FC = () => {
                 <span className="line" />
             </Tab>
             <Main>
-                <LeftSide id={moderador_id} auth={auth} />
+                <LeftSide perfilUser={perfilUser} />
                 <RightSide>
                 {eterapiaPlus.map(eterapia => (
-                    <div>
+                    <div key={eterapia['id']}>
                         <h2 className='titles'>{ eterapia['title'] }</h2>
                         <Description description={ eterapia['description'] }/>
                         <div className="part-info">
                             <Encontros dataNavigate={
                                 {
                                     eterapia_id: eterapia['id'],
+                                    eterapia_title: eterapia['title'],
                                     auth: auth,
                                 }
                             } data={encontros} />
                             <Information
-                                dataNavigate={dataNavigate}
                                 date={ eterapia['dayOfWeek'] }
                                 time={ eterapia['clock'] }
                                 people={eterapia['numberOfParticipants']}

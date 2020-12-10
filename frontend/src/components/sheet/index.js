@@ -3,7 +3,7 @@ import ReactDataSheet from 'react-datasheet';
 // import 'componets/list/node_modules/react-datasheet/lib/react-datasheet.css';
 import './styles.css'
 
-import Loading from '../loading'
+// import Loading from '../loading'
 
 import api from '../../services/api';
 
@@ -53,7 +53,7 @@ export default function Sheet({ auth, link }) {
             <div className="tap-container">
                 {tap}
             </div>
-            {sheets.length ? list : <Loading />}
+            {sheets.length ? list : <p>Carregando ...</p>}
         </div>
     );
 }
