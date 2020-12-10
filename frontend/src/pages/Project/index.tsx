@@ -59,7 +59,7 @@ const Profile: React.FC = () => {
     }
 
     const getEncontros = async (eterapia_id: string) => {
-        const response = await api.get(`encontros?eterapia_id=${eterapia_id}`, {
+        const response = await api.get(`encontros?ascDesc=desc&eterapia_id=${eterapia_id}`, {
             headers: {
                 Authorization: auth
             }
