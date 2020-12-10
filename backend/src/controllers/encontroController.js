@@ -33,13 +33,13 @@ module.exports = {
     async create(request, response, next) {
         try {
             const {
-                id_eterapia_fk,
+                eterapia_id,
                 dateTime,
                 app
             } = request.body;
 
             const id = await Encontro.create({
-                id_eterapia_fk,
+                eterapia_id,
                 dateTime,
                 app
             })
@@ -54,13 +54,13 @@ module.exports = {
             const { id } = request.params;
 
             const {
-                id_eterapia_fk,
+                eterapia_id,
                 dateTime,
                 app
             } = request.body;
 
             const numberOfRawUpdated = await Encontro.update(id, {
-                id_eterapia_fk,
+                eterapia_id,
                 dateTime,
                 app
             })
