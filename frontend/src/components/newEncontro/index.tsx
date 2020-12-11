@@ -16,8 +16,7 @@ const NewEncontro: React.FC<Props> = ({ eterapia_id, turnOffEncontro, renderFath
 
     function handleDataTime() {
         const date = new Date()
-        const array = date.toString().split(' ')
-        return array[2]+'/'+array[1]+'/'+array[3]+' '+array[4]
+        return date
     }
 
     async function createEncontro(e: Event) {
@@ -45,7 +44,6 @@ const NewEncontro: React.FC<Props> = ({ eterapia_id, turnOffEncontro, renderFath
 
     return (
         <Container>
-            <h3 className="titles">Novo Encontro</h3>
             <form onSubmit={createEncontro as any}>
                 <Row>
                     <li>

@@ -1,0 +1,29 @@
+.list-container {
+    width: auto;
+    /* max-width: 500px; */
+    height: auto;
+    margin: 0 auto;
+  
+    margin: 4px, 4px; 
+    padding: 4px; 
+    /* background-color: #08c708;  */
+    overflow-x: auto; 
+    overflow-y: hidden; 
+    white-space: nowrap;
+  
+    display: inline-block
+  }
+  
+  .data-grid {
+    background: #FFF;
+  }
+  
+  .data-grid-container .data-grid {
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  
+  .value-viewer {
+    padding-left: 10px;
+    padding-right: 10px;
+  }

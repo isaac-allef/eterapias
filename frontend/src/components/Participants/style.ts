@@ -10,6 +10,14 @@ export const Container = styled.div`
     border-radius: 6px;
     background: #9EC98B;
     min-width: 50%;
+
+    max-height: 200px;
+    overflow-y: scroll;
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
 `;
 
 export const Row = styled.ul`

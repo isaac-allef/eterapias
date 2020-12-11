@@ -36,7 +36,7 @@ const Frequency: React.FC = () => {
                     <li>
                         <MailIcon />
                         <input 
-                            placeholder="Digite o seu e-mail"
+                            placeholder="Digite o seu usuário"
                             value={userName}
                             onChange={e => setUserName(e.target.value)}
                              />
@@ -49,9 +49,10 @@ const Frequency: React.FC = () => {
                         />
                     </li>
                     <button className="informationButtons" type="submit">Acessar</button>
+                    <Link className='linkPassword' to="change-password">Mudar senha</Link>
                 </Row>
             </form>
-            <Link to="change-password">Mudar senha</Link>
+            
         </Container>
     );
 };

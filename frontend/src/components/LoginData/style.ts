@@ -11,6 +11,7 @@ export const Container = styled.div`
         display: flex;
         border-bottom: 2px solid white;
     }
+
 `;
 
 export const Row = styled.ul`
@@ -50,6 +51,10 @@ export const Row = styled.ul`
         margin: 10px 0;
         background: #86c36b;
         border-radius: 5px;
+    }
+
+    .linkPassword {
+        padding-top: 10px;
     }
 `;
 

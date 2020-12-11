@@ -5,6 +5,10 @@ import NewEncontro from "../newEncontro";
 
 import { Container, Row, AlterDiv } from "./style";
 
+import { parseISO, format } from "date-fns";
+
+import pt from "date-fns/locale/pt";
+
 import api from "../../services/api";
 
 interface dataNavigate {
@@ -54,6 +58,15 @@ const Encontros: React.FC<Props> = ({ dataNavigate, data }) => {
         }
     };
 
+    function handleDataTime(data: string) {
+        const formattedDate = format(
+            parseISO(data),
+            "'Dia' dd 'de' MMMM', às ' HH:mm'h'",
+            { locale: pt }
+        );
+        return formattedDate;
+    }
+
     async function renderAgain() {
         await getEncontros(dataNavigate.eterapia_id);
     }
@@ -64,8 +77,11 @@ const Encontros: React.FC<Props> = ({ dataNavigate, data }) => {
 
     function turnOnEncontro() {
         setNewEncontro(
-            <div>
-                <Button onClick={turnOffEncontro}>X</Button>
+            <div className='new'>
+                <div className="newEncontro">
+                    <h3>Novo Encontro</h3>
+                    <Button onClick={turnOffEncontro}>X</Button>
+                </div>
                 <NewEncontro
                     eterapia_id={dataNavigate.eterapia_id}
                     turnOffEncontro={turnOffEncontro}
@@ -125,7 +141,9 @@ const Encontros: React.FC<Props> = ({ dataNavigate, data }) => {
                                 navigate("/frequency");
                             }}
                         >
-                            <p>{encontro.dateTime} | </p>
+                            <p>
+                                {handleDataTime(encontro.dateTime.toString())} |{" "}
+                            </p>
                             <p> {encontro.app}</p>
                         </Button>
                         <Button
