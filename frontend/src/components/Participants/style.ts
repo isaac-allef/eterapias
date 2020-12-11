@@ -17,7 +17,7 @@ export const Row = styled.ul`
     flex-direction: column;
     align-items: flex-start;
     flex-wrap: wrap;
-    margin: 20px 0;
+    margin: 10px 0;
 
     > h2 {
         font-size: 20px;

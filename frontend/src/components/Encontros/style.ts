@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
     display: flex;
@@ -8,13 +8,17 @@ export const Container = styled.div`
     margin-top: 20px;
     border: 1px solid var(--border);
     border-radius: 6px;
-    background: #9EC98B;
+    background: #9ec98b;
     min-width: 50%;
-    max-height: 350px;
+    max-height: 180px;
     overflow-y: scroll;
 
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
     .btnAdd {
-        background-color: #49CC06;
+        background-color: #49cc06;
     }
 `;
 
@@ -34,10 +38,19 @@ export const Row = styled.ul`
         flex-direction: row;
         justify-content: space-between;
 
-        > p{
+        > p {
             font-size: 14px;
             color: var(--gray);
         }
-        
+    }
+`;
+
+export const AlterDiv = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+
+    > button {
+        padding: 0px;
     }
 `;

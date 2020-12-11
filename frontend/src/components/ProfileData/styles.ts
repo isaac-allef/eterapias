@@ -38,7 +38,7 @@ export const Flex = styled.div`
 `;
 
 export const Avatar = styled.img`
-    width: 16%;
+    width: 20%;
     border-radius: 50%;
     margin-top: 20px;
 
