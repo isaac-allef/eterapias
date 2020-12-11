@@ -10,14 +10,19 @@ export const Container = styled.div`
     border-radius: 6px;
     background: #9EC98B;
     min-width: 50%;
+    max-height: 350px;
+    overflow-y: scroll;
+
+    .btnAdd {
+        background-color: #49CC06;
+    }
 `;
 
 export const Row = styled.ul`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     flex-wrap: wrap;
-    margin: 20px 0;
+    margin: 10px 0;
 
     > h2 {
         font-size: 20px;
@@ -26,14 +31,13 @@ export const Row = styled.ul`
 
     > li {
         display: flex;
-        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
 
         > p{
             font-size: 14px;
             color: var(--gray);
         }
-        > *{
-            margin-right: 5px;
-        }
+        
     }
 `;

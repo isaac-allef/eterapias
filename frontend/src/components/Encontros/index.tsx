@@ -95,7 +95,7 @@ const Encontros: React.FC<Props> = ({
     return (
         <Container>
             <h2>Encontros</h2>
-            <Button onClick={turnOnEncontro} >+</Button>
+            <Button className='btnAdd' onClick={turnOnEncontro} >Adicionar</Button>
             {newEncontro}
             {
                 encontros.map(encontro => (
@@ -114,7 +114,7 @@ const Encontros: React.FC<Props> = ({
                                     <p>{ encontro.dateTime } | </p>
                                     <p> { encontro.app }</p>
                                 </Button>
-                            <Button onClick={async () => await deleteEncontro(encontro.id)} >X</Button>
+                            <Button onClick={async () => await deleteEncontro(encontro.id)} >Excluir</Button>
                         </li>
                     </Row>
                 ))

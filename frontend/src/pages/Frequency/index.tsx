@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, Main, RightSide, RepoIcon, Tab } from './style';
+import { Container, Main, RightSide, RepoIcon } from './style';
 import LeftSide from '../../components/LeftSide';
 import Register from '../../components/Register';
 
@@ -38,25 +38,8 @@ const Frequency: React.FC = () => {
 
     const { eterapia_id, encontro_id,eterapia_title, encontro_dataTime, auth, perfilUser } = dataNavigate;
 
-    const TabContent = () => (
-        <div className="content">
-            <RepoIcon />
-            <span className="label">
-                Projetos
-            </span>
-            <span className="number">6</span>
-        </div>
-    );
-
     return (
         <Container>
-            <Tab className="desktop">
-                <div className="wrapper">
-                    <span className="offset" />
-                        <TabContent />
-                </div>
-                <span className="line" />
-            </Tab>
             <Main>
                 <LeftSide perfilUser={perfilUser} />
                 <RightSide>

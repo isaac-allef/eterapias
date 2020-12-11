@@ -1,21 +1,23 @@
 .list-container {
-  width: auto;
-  /* max-width: 500px; */
-  height: auto;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 
-  margin: 4px, 4px; 
-  padding: 4px; 
-  /* background-color: #08c708;  */
-  overflow-x: auto; 
+  margin: 10px auto;
+
+  padding: 4px;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #9ec98b;
+  min-width: 40%;
+
   overflow-y: hidden; 
   white-space: nowrap;
-
-  display: inline-block
+  
 }
 
 .data-grid {
-  background: #FFF;
+  background: #91E114;
 }
 
 .data-grid-container .data-grid {
