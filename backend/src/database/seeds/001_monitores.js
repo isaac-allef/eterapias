@@ -15,7 +15,8 @@ exports.seed = function(knex) {
           whatsapp_tel: '73988121212', 
           city: 'Ilhéus', 
           uf: 'BA', 
-          college: 'UESC'
+          college: 'UESC',
+          professional: 'Psicóloga'
         },
         {
           userName: 'ana', 
@@ -25,7 +26,8 @@ exports.seed = function(knex) {
           whatsapp_tel: '73988999999', 
           city: 'Salobrinho', 
           uf: 'BA', 
-          college: 'UESC'
+          college: 'UESC',
+          professional: 'Ginasta'
         },
         {
           userName: 'rosane', 
@@ -35,7 +37,8 @@ exports.seed = function(knex) {
           whatsapp_tel: '73988656565', 
           city: 'Salobrinho', 
           uf: 'BA', 
-          college: 'UESC'
+          college: 'UESC',
+          professional: 'Terapeuta'
         },
         {
           userName: 'jessica', 
@@ -45,7 +48,8 @@ exports.seed = function(knex) {
           whatsapp_tel: '73988383838', 
           city: 'Ilhéus', 
           uf: 'BA', 
-          college: 'UESC'
+          college: 'UESC',
+          professional: 'Astronauta'
         },
       ]);
     });

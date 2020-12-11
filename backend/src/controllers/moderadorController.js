@@ -41,7 +41,8 @@ module.exports = {
                 whatsapp_tel,
                 city,
                 uf,
-                college
+                college,
+                professional
             } = request.body;
 
             const id = await Moderador.create({
@@ -52,7 +53,8 @@ module.exports = {
                 whatsapp_tel,
                 city,
                 uf,
-                college
+                college,
+                professional
             })
             
             return response.status(201).json({id: id});
@@ -73,7 +75,8 @@ module.exports = {
                 whatsapp_tel,
                 city,
                 uf,
-                college
+                college,
+                professional
             } = request.body;
 
             const numberOfRawUpdated = await Moderador.update(id, {
@@ -84,7 +87,8 @@ module.exports = {
                 whatsapp_tel,
                 city,
                 uf,
-                college
+                college,
+                professional
             })
             
             if(!numberOfRawUpdated)
