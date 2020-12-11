@@ -155,13 +155,13 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
     const classes = useStyles();
 
     return (
-        <div>
-            <TableContainer component={Paper}>
+        <div className='tableAndBtn'>
+            <TableContainer component={Paper} className='TableMargin'>
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
                             <StyledTableCell>
-                                ID do Participante
+                                Check de Presença
                             </StyledTableCell>
                             <StyledTableCell align="right">
                                 Nome Completo
@@ -209,7 +209,7 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <button onClick={pushAttendanceList}>Submit</button>
+            <button className='btnSubmit' onClick={pushAttendanceList}>Atualizar</button>
         </div>
     );
 }
