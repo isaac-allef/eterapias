@@ -15,8 +15,9 @@ const formularioController = require('./controllers/formularioController');
 const routes = express.Router();
 
 routes.post('/authenticate', authenticationController.authenticationModeradores);
+routes.put('/moderadorLoginPass', moderadorController.updateLoginPass);
 
-// routes.use(authMiddleware)
+routes.use(authMiddleware)
 // qualquer rota colocada depois dessa linha:
 //      precisará ter um token de acesso
 //      dada pela rota authorization
@@ -36,7 +37,7 @@ routes.post('/moderador', moderadorController.create);
 routes.put('/moderador/:id', moderadorController.update);
 routes.delete('/moderador/:id', moderadorController.delete);
 
-routes.put('/moderadorLoginPass', moderadorController.updateLoginPass);
+
 //
 
 //

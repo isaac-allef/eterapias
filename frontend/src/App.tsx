@@ -8,6 +8,7 @@ import Project from './pages/Project';
 import Frequency from './pages/Frequency';
 import Login from './pages/Login';
 import AssociateQU from './pages/AssociateQU';
+import ChangePassword from './pages/ChangePassword';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Header />
       <Routes>
         <Route path='/' element={<Login />}/>
+        <Route path='/change-password' element={<ChangePassword />}/>
         <Route path='/profile' element={<Profile />}/>
         <Route path='/project' element={<Project />}/>
         <Route path='/frequency' element={<Frequency />}/>
