@@ -8,22 +8,42 @@ exports.seed = function(knex) {
       // const password = await bcrypt.hash('123', 10);
       return knex('moderador').insert([
         {
-          userName: 'isaac_allef', 
-          password: await bcrypt.hash('123', 10),
-          fullName: 'Isaac Allef Santos Cruz', 
-          email: 'isaac_allef@hotmail.com', 
-          whatsapp_tel: '73988696833', 
-          city: 'Itapé', 
+          userName: 'daniela', 
+          password: await bcrypt.hash('111', 10),
+          fullName: 'Daniela da Silva Rodrigues', 
+          email: 'daniela@hotmail.com', 
+          whatsapp_tel: '73988121212', 
+          city: 'Ilhéus', 
           uf: 'BA', 
           college: 'UESC'
         },
         {
-          userName: 'curinga_hahaha', 
-          password: await bcrypt.hash('321', 10),
-          fullName: 'Curinga Santos da Silva', 
-          email: 'hahaha@hahaha.com', 
+          userName: 'ana', 
+          password: await bcrypt.hash('222', 10),
+          fullName: 'Ana Maria Alvarenga', 
+          email: 'ana@gmail.com', 
           whatsapp_tel: '73988999999', 
-          city: 'Estiva', 
+          city: 'Salobrinho', 
+          uf: 'BA', 
+          college: 'UESC'
+        },
+        {
+          userName: 'rosane', 
+          password: await bcrypt.hash('333', 10),
+          fullName: 'Rosane Lopes Araújo Magalhães', 
+          email: 'ana@gmail.com', 
+          whatsapp_tel: '73988656565', 
+          city: 'Salobrinho', 
+          uf: 'BA', 
+          college: 'UESC'
+        },
+        {
+          userName: 'jessica', 
+          password: await bcrypt.hash('444', 10),
+          fullName: 'Jessica Novaes Mascarenhas', 
+          email: 'jessica@gmail.com', 
+          whatsapp_tel: '73988383838', 
+          city: 'Ilhéus', 
           uf: 'BA', 
           college: 'UESC'
         },

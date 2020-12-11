@@ -9,8 +9,63 @@ exports.seed = function(knex) {
           participante_id: 1,
         },
         {
+          eterapia_id: 1,
+          participante_id: 2,
+        },
+        {
+          eterapia_id: 1,
+          participante_id: 3,
+        },
+        {
+          eterapia_id: 1,
+          participante_id: 4,
+        },
+
+        {
           eterapia_id: 2,
           participante_id: 2,
+        },
+        {
+          eterapia_id: 2,
+          participante_id: 3,
+        },
+        {
+          eterapia_id: 2,
+          participante_id: 4,
+        },
+        {
+          eterapia_id: 2,
+          participante_id: 5,
+        },
+
+        {
+          eterapia_id: 3,
+          participante_id: 3,
+        },
+        {
+          eterapia_id: 3,
+          participante_id: 4,
+        },
+        {
+          eterapia_id: 3,
+          participante_id: 5,
+        },
+        {
+          eterapia_id: 3,
+          participante_id: 6,
+        },
+
+        {
+          eterapia_id: 4,
+          participante_id: 4,
+        },
+        {
+          eterapia_id: 4,
+          participante_id: 5,
+        },
+        {
+          eterapia_id: 4,
+          participante_id: 6,
         },
       ]);
     });

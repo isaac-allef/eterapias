@@ -12,6 +12,18 @@ exports.seed = function(knex) {
           eterapia_id: 2,
           moderador_id: 2,
         },
+        {
+          eterapia_id: 3,
+          moderador_id: 3,
+        },
+        {
+          eterapia_id: 3,
+          moderador_id: 4,
+        },
+        {
+          eterapia_id: 4,
+          moderador_id: 4,
+        },
       ]);
     });
 };

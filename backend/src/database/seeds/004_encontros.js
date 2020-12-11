@@ -11,8 +11,18 @@ exports.seed = function(knex) {
         },
         {
           eterapia_id: 2,
+          dateTime: "11/12/2020 12:09",
+          app: "zoom"
+        },
+        {
+          eterapia_id: 3,
           dateTime: "11/11/2020 13:56",
           app: "whatsapp"
+        },
+        {
+          eterapia_id: 4,
+          dateTime: "11/12/2020 13:30",
+          app: "google meet"
         },
       ]);
     });
