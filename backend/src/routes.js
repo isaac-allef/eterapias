@@ -36,7 +36,7 @@ routes.post('/moderador', moderadorController.create);
 routes.put('/moderador/:id', moderadorController.update);
 routes.delete('/moderador/:id', moderadorController.delete);
 
-routes.put('/moderadorLoginPass/:id', moderadorController.updateLoginPass);
+routes.put('/moderadorLoginPass', moderadorController.updateLoginPass);
 //
 
 //

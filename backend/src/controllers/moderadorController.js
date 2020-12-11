@@ -115,12 +115,11 @@ module.exports = {
 
     async updateLoginPass(request, response, next) {
         try {
-            const { id } = request.params;
-            let { password, newUserName, newPassword } = request.body;
+            let { userName, password, newUserName, newPassword } = request.body;
             
-            const user = await connectionDB('moderadores')
+            const user = await connectionDB('moderador')
                 .select('*')
-                .where('id', id)
+                .where('userName', userName)
                 .first();
         
             if(!user) {
@@ -132,7 +131,7 @@ module.exports = {
 
             newPassword = await cryptHanddle.crypt(newPassword);
 
-            await connectionDB('moderadores').where('id', id).update({
+            await connectionDB('moderador').where('userName', userName).update({
                 userName: newUserName,
                 password: newPassword,
             })
