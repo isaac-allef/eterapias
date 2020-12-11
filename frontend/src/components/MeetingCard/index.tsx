@@ -17,7 +17,7 @@ interface Props {
     people: number;
 }
 
-const RepoCard: React.FC<Props> = ({
+const MeetingCard: React.FC<Props> = ({
     dataNavigate,
     reponame,
     description,
@@ -64,4 +64,4 @@ const RepoCard: React.FC<Props> = ({
     );
 };
 
-export default RepoCard;
+export default MeetingCard;

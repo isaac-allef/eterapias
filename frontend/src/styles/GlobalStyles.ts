@@ -36,6 +36,11 @@ export default createGlobalStyle`
         
         --segunda: #f1e05a;
         --terça: #2b7489;
+        --quarta: #992DEC;
+        --quinta:#2979DC;
+        --sexta: #E7944B;
+        --sabado: #C33562;
+        --domingo: #F6F93F;
     }
 
 

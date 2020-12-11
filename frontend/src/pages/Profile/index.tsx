@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Container, Main, RightSide, Repos, RepoIcon, Tab } from './style';
-import RepoCard from '../../components/RepoCard';
+import MeetingCard from '../../components/MeetingCard';
 import LeftSide from '../../components/LeftSide';
 
 import api from '../../services/api';
@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
             <span className="label">
                 Projetos
             </span>
-            <span className="number">6</span>
+                <span className="number">{eterapias.length}</span>
         </div>
     );
 
@@ -96,7 +96,7 @@ const Profile: React.FC = () => {
                     <Repos>
                         <div>
                             {eterapiasPlus.map(eterapia => (
-                                <RepoCard
+                                <MeetingCard
                                     key={eterapia['id']}
                                     dataNavigate={{
                                         eterapia_id: eterapia['id'],

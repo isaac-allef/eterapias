@@ -10,4 +10,8 @@ export const Main = styled.div`
     justify-content: center;
     margin: 120px auto;
     background: #9EC98B;
+
+    @media (max-width: 550px){
+        width: 100%
+    }
 `;

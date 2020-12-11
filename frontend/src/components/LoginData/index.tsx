@@ -29,7 +29,7 @@ const Frequency: React.FC = () => {
     return (
         <Container>
             <h1 className="titles">Login</h1>
-            <h2 className="titles">Administradores</h2>
+            <h2 className="titles">Moderadores</h2>
             <span className="line" />
             <form onSubmit={handleLogin as any}>
                 <Row>

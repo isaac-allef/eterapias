@@ -37,7 +37,6 @@ export const Row = styled.ul`
             font-size: 15px;
             color: black;
             padding-left: 10px;
-            border: 2px solid #055412;
         }
     }
 

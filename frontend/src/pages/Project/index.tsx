@@ -91,22 +91,11 @@ const Profile: React.FC = () => {
         addParticipants()
     }, [participantes]);
 
-    const TabContent = () => (
-        <div className="content">
-            <RepoIcon />
-            <span className="label">
-                Projetos
-            </span>
-            <span className="number">6</span>
-        </div>
-    );
-
     return (
         <Container>
             <Tab className="desktop">
                 <div className="wrapper">
                     <span className="offset" />
-                        <TabContent />
                 </div>
                 <span className="line" />
             </Tab>

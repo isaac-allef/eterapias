@@ -69,6 +69,21 @@ export const BotSide = styled.div`
         &.terça {
             background: var(--terça);
         }
+        &.quarta {
+            background: var(--quarta);
+        }
+        &.quinta {
+            background: var(--quinta);
+        }
+        &.sexta {
+            background: var(--sexta);
+        }
+        &.sabado {
+            background: var(--sabado);
+        }
+        &.domingo {
+            background: var(--domingo);
+        }
     }
 `;
 
