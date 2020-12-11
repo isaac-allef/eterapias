@@ -17,6 +17,7 @@ const Frequency: React.FC = () => {
         city: string,
         uf: string,
         college: string,
+        professional: string
     }
 
     interface dataNavigate {

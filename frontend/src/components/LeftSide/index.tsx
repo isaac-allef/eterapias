@@ -14,6 +14,7 @@ interface perfilUser {
     city: string,
     uf: string,
     college: string,
+    professional: string
 }
 
 interface Props {
@@ -33,7 +34,7 @@ const LeftSide: React.FC<Props> = ({ perfilUser }) => {
                 company={perfilUser['college']}
                 location={`${perfilUser['uf']}, ${perfilUser['city']}`}
                 email={perfilUser['email']}
-                profissional={"Técnico"} // ainda está estático pq o backend ainda não fornesse essa informação
+                profissional={perfilUser['professional']}
             />
         </Container>
     );
