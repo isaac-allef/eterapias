@@ -18,12 +18,11 @@ export const Row = styled.ul`
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap;
-    margin: 20px 0;
+    margin: 5px 0;
 
     > li {
         display: flex;
         align-items: center;
-        margin: 20px;
 
         > input {
             margin-left: 20px;
@@ -37,7 +36,6 @@ export const Row = styled.ul`
             font-size: 15px;
             color: black;
             padding-left: 10px;
-            border: 2px solid #055412;
         }
     }
 

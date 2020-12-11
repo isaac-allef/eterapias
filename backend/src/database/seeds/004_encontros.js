@@ -1,4 +1,3 @@
-
 exports.seed = function(knex) {
   // Deletes ALL existing entries
   return knex('encontro').del()
@@ -6,22 +5,22 @@ exports.seed = function(knex) {
       return knex('encontro').insert([
         {
           eterapia_id: 1,
-          dateTime: "05/11/2020 16:25",
+          dateTime: new Date(),
           app: "google meet"
         },
         {
           eterapia_id: 2,
-          dateTime: "11/12/2020 12:09",
+          dateTime: new Date(),
           app: "zoom"
         },
         {
           eterapia_id: 3,
-          dateTime: "11/11/2020 13:56",
+          dateTime: new Date(),
           app: "whatsapp"
         },
         {
           eterapia_id: 4,
-          dateTime: "11/12/2020 13:30",
+          dateTime: new Date(),
           app: "google meet"
         },
       ]);

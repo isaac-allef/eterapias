@@ -20,6 +20,18 @@ export const Container = styled.div`
     .btnAdd {
         background-color: #49cc06;
     }
+
+    .new {
+        background-color: #8BAE7B;
+        margin: 5px 0;
+    }
+
+    .newEncontro {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 5px;
+    }
 `;
 
 export const Row = styled.ul`

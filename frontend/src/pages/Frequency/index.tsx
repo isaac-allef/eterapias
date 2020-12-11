@@ -6,6 +6,14 @@ import Register from '../../components/Register';
 
 import AttendanceList from '../../components/attendanceList';
 
+import { 
+    parseISO, 
+    format, 
+  } from 'date-fns';
+
+import pt from 'date-fns/locale/pt';
+
+
 const Frequency: React.FC = () => {
 
     interface perfilUser {
@@ -17,7 +25,6 @@ const Frequency: React.FC = () => {
         city: string,
         uf: string,
         college: string,
-        professional: string
     }
 
     interface dataNavigate {
@@ -39,13 +46,19 @@ const Frequency: React.FC = () => {
 
     const { eterapia_id, encontro_id,eterapia_title, encontro_dataTime, auth, perfilUser } = dataNavigate;
 
+    const formattedDate = format(
+        parseISO(encontro_dataTime), 
+        "'Dia' dd 'de' MMMM', às ' HH:mm'h'",
+        {locale: pt}
+      );
+
     return (
         <Container>
             <Main>
                 <LeftSide perfilUser={perfilUser} />
                 <RightSide>
                     <h2 className='titles'>{ eterapia_title }</h2>
-                    <h2 className='titles'>{`Lista de Presença: ${ encontro_dataTime }`}</h2>
+                    <h2 className='titles'>{`Lista de Presença: ${ formattedDate }`}</h2>
                     {/* <Register
                     name={'Arraia'}
                     date={'17/10'}

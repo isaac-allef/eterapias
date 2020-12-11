@@ -14,4 +14,8 @@ export const Main = styled.div`
     @media (max-width: 550px){
         width: 100%
     }
+
+    .linkLogin {
+        padding-top: 10px;
+    }
 `;

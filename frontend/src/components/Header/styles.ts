@@ -16,12 +16,18 @@ export const Container = styled.div`
         width: 40px;
         height: 50px;
         flex-shrink: 0;
+    }
+
+    .link {
+        padding-left: 50px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btnEnd {
+        align-items: center;
         margin-left: auto;
     }
 
-    >h1 {
-        padding-left: 50px;
-        color: white;
-    }
 `;
 

@@ -17,11 +17,11 @@ function App() {
       <Header />
       <Routes>
         <Route path='/' element={<Login />}/>
-        <Route path='/change-password' element={<ChangePassword />}/>
         <Route path='/profile' element={<Profile />}/>
         <Route path='/project' element={<Project />}/>
         <Route path='/frequency' element={<Frequency />}/>
         <Route path='/associate' element={<AssociateQU />}/>
+        <Route path='/change-password' element={<ChangePassword />}/>
       </Routes>
       {/* <Footer /> */}
       <GlobalStyles />

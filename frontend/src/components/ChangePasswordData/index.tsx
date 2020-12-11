@@ -28,7 +28,7 @@ const RecoverPasswordData: React.FC = () => {
 
     return (
         <Container>
-            <h1 className="titles">Mudar senha</h1>
+            <h1 className="titles">Alterar senha</h1>
             <h2 className="titles">Moderadores</h2>
             <span className="line" />
             <form onSubmit={handleChangePassword as any}>
@@ -36,7 +36,7 @@ const RecoverPasswordData: React.FC = () => {
                     <li>
                         <MailIcon />
                         <input 
-                            placeholder="Digite o seu nome de usuário"
+                            placeholder="Digite o seu usuário"
                             value={userName}
                             onChange={e => setUserName(e.target.value)}
                              />
@@ -56,9 +56,10 @@ const RecoverPasswordData: React.FC = () => {
                         />
                     </li>
                     <button className="informationButtons" type="submit">Acessar</button>
+                    <Link className='linkLogin' to="/">Login</Link>
                 </Row>
             </form>
-            <Link to="/">Login</Link>
+            
         </Container>
     );
 };

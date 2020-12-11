@@ -16,7 +16,6 @@ const Profile: React.FC = () => {
         city: string,
         uf: string,
         college: string,
-        professional: string
     }
     interface dataNavigate {
         id: string,
