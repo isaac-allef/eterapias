@@ -73,7 +73,7 @@ const Profile: React.FC = () => {
         <div className="content">
             <RepoIcon />
             <span className="label">
-                Projetos
+                e-Terapias
             </span>
                 <span className="number">{eterapias.length}</span>
         </div>
