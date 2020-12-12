@@ -12,7 +12,7 @@ const Header: React.FC = () => {
             <img id="Logo" src={logo} />
             <h1>
                 <Link className="link" to="/profile">
-                    E-Terapias
+                    e-Terapias
                 </Link>
             </h1>
             <div className='btnEnd'>
