@@ -67,7 +67,7 @@ Obs.:
     - Criar database para o banco de dados
     - Modificar o usuário, senha e database para os dados do seu Postgres no objeto development arquivo knexfile.js
 
-    ![Memorial%20Descritivo%20-%20E-Terapias%20453b7d1cce2b42c49e289cf72e495c26/Screenshot_from_2020-12-11_22-15-49.png](Memorial%20Descritivo%20-%20E-Terapias%20453b7d1cce2b42c49e289cf72e495c26/Screenshot_from_2020-12-11_22-15-49.png)
+    ![Memorial%20Descritivo%20-%20E-Terapias/Screenshot_from_2020-12-11_22-15-49.png](Memorial%20Descritivo%20-%20E-Terapias/Screenshot_from_2020-12-11_22-15-49.png)
 
 - Caso ocorra algum problema com os pacotes, utilizar comando npm/yarn upgrade
 
