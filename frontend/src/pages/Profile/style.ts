@@ -62,7 +62,7 @@ export const Tab = styled.div`
     .content {
         display: flex;
         align-items: center;
-        width: min-content;
+        width: min-content + 1px;
 
         padding: 14px 16px;
 

@@ -9,6 +9,7 @@ Para o desenvolvimento back-end do projeto, utilizamos a biblioteca Node, da lin
 A estrutura do projeto consiste basicamente em uma pasta src, que usamos para o desenvolvimento da aplicação, e arquivo knexfile.js com configurações para conexão entre knex e do banco de dados. Essa pasta contém outras três pastas: config, database, handdles, middlewares e models, além de dois arquivos, index.js e routes.js.
 
 - Na pasta config, temos a chave secreta para codificação das senhas dos moderadores;
+- Na pasta apiGoogleSheets, temos conexões com Google Sheets;
 - Na pasta controllers, temos os arquivos com regras de negócio para gerenciamento de dados do banco;
 - Na pasta database, temos uma pasta contendo as migrations utilizadas para o banco de dados, pasta contendo os arquivos seeds, para povoamento do mesmo, e um arquivo connection.js para conexão do knex, query builder utilizado no projeto;
 - Na pasta handdles, temos arquivos que facilitam tanto a codificação das senhas dos moderadores, manipulação de objetos e de strings;
