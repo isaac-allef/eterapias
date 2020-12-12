@@ -55,7 +55,7 @@ const RecoverPasswordData: React.FC = () => {
                         onChange={e => setNewPassword(e.target.value)}
                         />
                     </li>
-                    <button className="informationButtons" type="submit">Acessar</button>
+                    <button className="informationButtons" type="submit">Alterar</button>
                     <Link className='linkLogin' to="/">Login</Link>
                 </Row>
             </form>
