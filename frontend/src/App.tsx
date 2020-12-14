@@ -9,6 +9,7 @@ import Frequency from './pages/Frequency';
 import Login from './pages/Login';
 import AssociateQU from './pages/AssociateQU';
 import ChangePassword from './pages/ChangePassword';
+import FieldJournal from './pages/fieldJournal';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path='/profile' element={<Profile />}/>
         <Route path='/project' element={<Project />}/>
         <Route path='/frequency' element={<Frequency />}/>
+        <Route path='/field-journal' element={<FieldJournal />}/>
         <Route path='/associate' element={<AssociateQU />}/>
         <Route path='/change-password' element={<ChangePassword />}/>
       </Routes>

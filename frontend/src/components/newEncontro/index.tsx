@@ -35,6 +35,18 @@ const NewEncontro: React.FC<Props> = ({ eterapia_id, turnOffEncontro, renderFath
             })
             renderFatherAgain()
             turnOffEncontro()
+
+            const user = JSON.parse(localStorage.getItem('perfilUser') as string)
+            const {id} = response.data
+            const response2 = await api.post(`diario`, {
+                moderador_id: user.id,
+                encontro_id: id,
+                description: ""
+            }, {
+                headers: {
+                    Authorization: localStorage.getItem('auth') as string
+                }
+            })
         }catch(err) {
             // alert(err)
             console.log(err)
