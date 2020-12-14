@@ -20,8 +20,17 @@ class DiarioDeCampo extends Model {
         get = stringToArray(get, ',');
         
         const query = connectionDB(this.table);
+
+        if(moderador_id && encontro_id) {
+            query
+            .where('moderador_id', moderador_id)
+            .join('moderador', 'moderador.id', '=', 'diario_de_campo.moderador_id')
+            .andWhere('encontro_id', encontro_id)
+            .join('encontro', 'encontro.id', '=', 'diario_de_campo.encontro_id')
+            .select('diario_de_campo.*', 'moderador.fullName')
+        }
         
-        if(moderador_id) {
+        else if(moderador_id) {
             query
             .where('moderador_id', moderador_id)
             .join('moderador', 'moderador.id', '=', 'diario_de_campo.moderador_id')
