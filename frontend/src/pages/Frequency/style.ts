@@ -40,7 +40,6 @@ export const RightSide = styled.div`
     }
 `;
 
-
 export const RepoIcon = styled(RiBookMarkLine)`
     width: 16px;
     height: 16px;

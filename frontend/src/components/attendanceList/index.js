@@ -15,7 +15,7 @@ import {
     createStyles,
     makeStyles,
 } from "@material-ui/core/styles";
-
+import { Link } from 'react-router-dom'
 import api from "../../services/api";
 
 export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
@@ -210,6 +210,7 @@ export default function AttendanceList({ auth, eterapia_id, encontro_id }) {
                 </Table>
             </TableContainer>
             <button className='btnSubmit' onClick={pushAttendanceList}>Atualizar</button>
+            <Link className='btnJournal' to='/field-journal'>Diário de campo</Link>
         </div>
     );
 }
