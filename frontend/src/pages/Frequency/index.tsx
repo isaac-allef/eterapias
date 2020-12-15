@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Container, Main, RightSide, RepoIcon } from './style';
 import LeftSide from '../../components/LeftSide';
-import Register from '../../components/Register';
 
 import AttendanceList from '../../components/attendanceList';
 
@@ -12,8 +11,7 @@ import {
   } from 'date-fns';
 
 import pt from 'date-fns/locale/pt';
-import { Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+
 
 
 const Frequency: React.FC = () => {
@@ -72,7 +70,6 @@ const Frequency: React.FC = () => {
                         eterapia_id = {Number(eterapia_id)}
                         encontro_id = {Number(encontro_id)}
                     />
-                    <Link to='/field-journal'>Diário de campo</Link>
                 </RightSide>
             </Main>
         </Container>
